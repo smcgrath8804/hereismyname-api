@@ -25,7 +25,11 @@ SECRET_KEY = "django-insecure-+qkshxq_l@a=@k4s@0r-9+tnlg6s5a8rou0^%imc_!le2&*p5$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    # '213.165.241.20',
+    # 'hereismy.name',
+    # 'www.hereismy.name',
+]
 
 
 # Application definition
@@ -37,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'rest_framework',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -115,3 +121,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+## *Added code*
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
