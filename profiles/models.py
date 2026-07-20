@@ -9,6 +9,7 @@ class Profile(models.Model):
     )
 
     display_name = models.CharField(max_length=100)
+    local_language_name = models.CharField(max_length=100, blank=True)
 
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=20, blank=True)

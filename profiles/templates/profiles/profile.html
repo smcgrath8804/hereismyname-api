@@ -7,6 +7,13 @@
 
 <h1>{{ profile.display_name }}</h1>
 
+{% if visible_fields.local_language_name %}
+<p>
+    <strong>Name (local language):</strong>
+    {{ visible_fields.local_language_name }}
+</p>
+{% endif %}
+
 {% if visible_fields.email %}
 <p>
     <strong>Email:</strong>

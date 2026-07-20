@@ -5,6 +5,7 @@ from django.db import models
 class VisibilityRule(models.Model):
 
     FIELD_CHOICES = [
+        ("local_language_name", "Name (Local Language)"),
         ("email", "Email"),
         ("phone", "Phone"),
         ("job_title", "Job Title"),
