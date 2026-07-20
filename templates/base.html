@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}HereIsMy.Name{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+
+        <a class="navbar-brand" href="/">
+            HereIsMy.Name
+        </a>
+
+        <div class="ms-auto">
+
+            {% if user.is_authenticated %}
+
+                <span class="text-white me-3">
+                    {{ user.email }}
+                </span>
+
+                <a class="btn btn-outline-light btn-sm" href="#">
+                    Dashboard
+                </a>
+
+            {% else %}
+
+                <a class="btn btn-outline-light btn-sm me-2" href="#">
+                    Login
+                </a>
+
+                <a class="btn btn-primary btn-sm" href="#">
+                    Register
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
