@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ profile.display_name }}
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ profile.display_name }}</h1>
+
+{% if visible_fields.job_title or visible_fields.company %}
+<p class="text-muted">
+    {% if visible_fields.job_title %}
+        {{ visible_fields.job_title }}
+    {% endif %}
+
+    {% if visible_fields.job_title and visible_fields.company %}
+        at
+    {% endif %}
+
+    {% if visible_fields.company %}
+        {{ visible_fields.company }}
+    {% endif %}
+</p>
+{% endif %}
+
+<hr>
+
+{% if visible_fields.bio %}
+<h3>About</h3>
+
+<p>
+    {{ visible_fields.bio }}
+</p>
+
+<hr>
+{% endif %}
+
+<h3>Profile Information</h3>
+
+{% if visible_fields.local_language_name %}
+<p>
+    <strong>Local Name:</strong><br>
+    {{ visible_fields.local_language_name }}
+</p>
+{% endif %}
+
+{% if visible_fields.email %}
+<p>
+    <strong>Email:</strong><br>
+    {{ visible_fields.email }}
+</p>
+{% endif %}
+
+{% if visible_fields.phone %}
+<p>
+    <strong>Phone:</strong><br>
+    {{ visible_fields.phone }}
+</p>
+{% endif %}
+
+{% endblock %}

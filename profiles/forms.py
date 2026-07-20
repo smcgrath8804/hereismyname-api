@@ -17,3 +17,13 @@ class ProfileForm(forms.ModelForm):
             "company",
             "bio",
         ]
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields.values():
+
+            field.widget.attrs["class"] = "form-control"
+
+        self.fields["bio"].widget.attrs["rows"] = 5

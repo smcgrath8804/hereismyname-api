@@ -19,36 +19,50 @@ def profile_view(request, profile_id):
 
     visible_fields = {}
 
-    if viewer_username:
+    if request.user.is_authenticated and request.user == profile.user:
 
-        try:
+        visible_fields = {
+            "display_name": profile.display_name,
+            "local_language_name": profile.local_language_name,
+            "email": profile.email,
+            "phone": profile.phone,
+            "job_title": profile.job_title,
+            "company": profile.company,
+            "bio": profile.bio,
+        }
 
-            viewer = User.objects.get(
-                username=viewer_username
-            )
+    else:
 
-            connection = Connection.objects.get(
-                from_user=viewer,
-                to_user=profile.user
-            )
+        if viewer_username:
 
-            rules = VisibilityRule.objects.filter(
-                owner=profile.user,
-                visible_to=connection.connection_type
-            )
+            try:
 
-            for rule in rules:
-
-                visible_fields[rule.field_name] = getattr(
-                    profile,
-                    rule.field_name
+                viewer = User.objects.get(
+                    username=viewer_username
                 )
 
-        except (
-            User.DoesNotExist,
-            Connection.DoesNotExist
-        ):
-            pass
+                connection = Connection.objects.get(
+                    from_user=viewer,
+                    to_user=profile.user
+                )
+
+                rules = VisibilityRule.objects.filter(
+                    owner=profile.user,
+                    visible_to=connection.connection_type
+                )
+
+                for rule in rules:
+
+                    visible_fields[rule.field_name] = getattr(
+                        profile,
+                        rule.field_name
+                    )
+
+            except (
+                User.DoesNotExist,
+                Connection.DoesNotExist
+            ):
+                pass
 
     return render(
         request,
