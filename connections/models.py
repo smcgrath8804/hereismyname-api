@@ -4,33 +4,46 @@ from django.db import models
 
 class Connection(models.Model):
 
-    CONNECTION_TYPES = [
+    RELATIONSHIP_TYPES = [
+        ("public", "Public"),
         ("personal", "Personal"),
         ("professional", "Professional"),
         ("general", "General"),
     ]
 
-    from_user = models.ForeignKey(
+    owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name="sent_connections",
-        on_delete=models.CASCADE
+        related_name="owned_connections",
+        on_delete=models.CASCADE,
     )
 
-    to_user = models.ForeignKey(
+    requester = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name="received_connections",
-        on_delete=models.CASCADE
+        related_name="requested_connections",
+        on_delete=models.CASCADE,
     )
 
-    connection_type = models.CharField(
+    relationship = models.CharField(
         max_length=20,
-        choices=CONNECTION_TYPES
+        choices=RELATIONSHIP_TYPES,
+        null=True,
+        blank=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    reviewed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
     class Meta:
         unique_together = (
-            "from_user",
-            "to_user"
+            "owner",
+            "requester",
         )
+
+    def __str__(self):
+        if self.relationship:
+            return f"{self.requester} → {self.owner} ({self.relationship})"
+        return f"{self.requester} → {self.owner} (Pending)"
