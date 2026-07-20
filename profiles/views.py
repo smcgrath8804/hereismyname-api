@@ -1,5 +1,7 @@
-from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
 
+from .forms import ProfileForm
 from .models import Profile
 from connections.models import Connection
 from visibility.models import VisibilityRule
@@ -54,5 +56,38 @@ def profile_view(request, profile_id):
         {
             "profile": profile,
             "visible_fields": visible_fields
+        }
+    )
+
+
+@login_required
+def edit_profile(request):
+
+    profile = request.user.profile
+
+    if request.method == "POST":
+
+        form = ProfileForm(
+            request.POST,
+            instance=profile
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect("dashboard")
+
+    else:
+
+        form = ProfileForm(
+            instance=profile
+        )
+
+    return render(
+        request,
+        "profiles/edit_profile.html",
+        {
+            "form": form
         }
     )
