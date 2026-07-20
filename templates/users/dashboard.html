@@ -6,13 +6,33 @@
 
 <h1>Dashboard</h1>
 
-<p class="lead">
-    Welcome,
-    {{ user.username }}!
+{% if profile.display_name %}
+    <h3>Welcome, {{ profile.display_name }}!</h3>
+{% else %}
+    <h3>Welcome, {{ user.email }}!</h3>
+{% endif %}
+
+<p>
+    Manage your digital identity and control how it is presented to different audiences.
+</p>
+
+<hr>
+
+<h4>Your Profile</h4>
+
+<p>
+    <strong>Display Name:</strong>
+    {{ profile.display_name|default:"Not set" }}
 </p>
 
 <p>
-    This will become the main control panel for managing your digital identity.
+    <strong>Company:</strong>
+    {{ profile.company|default:"Not set" }}
+</p>
+
+<p>
+    <strong>Job Title:</strong>
+    {{ profile.job_title|default:"Not set" }}
 </p>
 
 <hr>
@@ -20,9 +40,7 @@
 <a
     href="{% url 'edit_profile' %}"
     class="btn btn-primary">
-
     Edit Profile
-
 </a>
 
 {% endblock %}

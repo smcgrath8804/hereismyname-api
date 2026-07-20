@@ -21,4 +21,11 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    return render(request, "users/dashboard.html")
+
+    return render(
+        request,
+        "users/dashboard.html",
+        {
+            "profile": request.user.profile,
+        },
+    )
