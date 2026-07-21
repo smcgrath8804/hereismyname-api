@@ -8,11 +8,11 @@ from visibility.models import VisibilityRule
 from users.models import User
 
 
-def profile_view(request, profile_id):
+def profile_view(request, username):
 
     profile = get_object_or_404(
         Profile,
-        id=profile_id
+        user__username=username
     )
 
     viewer_username = request.GET.get("viewer")
