@@ -18,6 +18,11 @@ Visibility Rules
             Configure which relationship types can view each profile field.
         </p>
 
+
+    <form method="post">
+
+        {% csrf_token %}
+
         <table class="table">
 
             <thead>
@@ -40,13 +45,13 @@ Visibility Rules
 
                     <td>{{ field_label }}</td>
 
-                    <td class="text-center"><input class="form-check-input" type="checkbox" disabled></td>
+                    <td class="text-center"><input class="form-check-input" type="checkbox" name="{{ field_name }}_public"></td>
 
-                    <td class="text-center"><input class="form-check-input" type="checkbox" disabled></td>
+                    <td class="text-center"><input class="form-check-input" type="checkbox" name="{{ field_name }}_professional"></td>
 
-                    <td class="text-center"><input class="form-check-input" type="checkbox" disabled></td>
+                    <td class="text-center"><input class="form-check-input" type="checkbox" name="{{ field_name }}_personal"></td>
 
-                    <td class="text-center"><input class="form-check-input" type="checkbox" disabled></td>
+                    <td class="text-center"><input class="form-check-input" type="checkbox" name="{{ field_name }}_general"></td>
 
                 </tr>
 
@@ -56,17 +61,12 @@ Visibility Rules
 
         </table>
 
-        <div class="d-flex justify-content-end">
+        <div class="d-flex justify-content-end mt-3">
 
-            <button
-                class="btn btn-primary"
-                disabled
-            >
-                Save Changes
-            </button>
+            <button class="btn btn-primary" type="submit">Save Changes</button>
 
         </div>
-
+    </form>
     </div>
 
 </div>
