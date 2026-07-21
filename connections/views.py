@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.utils import timezone
 
 from .models import Connection
 
@@ -73,4 +74,29 @@ def pending_requests(request):
             "requests": requests,
         },
     )
+
+@login_required
+def review_request(request, connection_id):
+
+    if request.method != "POST":
+        return redirect("connections:pending_requests")
+
+    connection = get_object_or_404(
+        Connection,
+        id=connection_id,
+        owner=request.user,
+        relationship__isnull=True,
+    )
+
+    connection.relationship = request.POST.get("relationship")
+    connection.reviewed_at = timezone.now()
+
+    connection.save()
+
+    messages.success(
+        request,
+        "Connection updated successfully."
+    )
+
+    return redirect("connections:pending_requests")
 

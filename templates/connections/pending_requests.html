@@ -8,39 +8,62 @@
 
     {% for connection in requests %}
 
-        <div class="card mb-3">
+    <div class="card mb-3">
 
-            <div class="card-body">
+        <div class="card-body">
 
-                <h5 class="card-title">
-                    {{ connection.requester.username }}
-                </h5>
+            <h5 class="card-title">
+                {{ connection.requester.username }}
+            </h5>
 
-                <p class="text-muted">
-                    {{ connection.requester.email }}
-                </p>
+            <p class="text-muted">
+                {{ connection.requester.email }}
+            </p>
 
-                <select class="form-select">
+            <form
+                method="post"
+                action="{% url 'connections:review_request' connection.id %}"
+            >
 
-                    <option>Public</option>
-                    <option>Professional</option>
-                    <option>Personal</option>
-                    <option>General</option>
+                {% csrf_token %}
+
+                <select
+                    name="relationship"
+                    class="form-select"
+                >
+
+                    <option value="public" selected>
+                        Public
+                    </option>
+
+                    <option value="professional">
+                        Professional
+                    </option>
+
+                    <option value="personal">
+                        Personal
+                    </option>
+
+                    <option value="general">
+                        General
+                    </option>
 
                 </select>
 
                 <button
                     class="btn btn-primary mt-3"
-                    disabled
+                    type="submit"
                 >
                     Save
                 </button>
 
-            </div>
+            </form>
 
         </div>
 
-    {% endfor %}
+    </div>
+
+{% endfor %}
 
 {% else %}
 
