@@ -6,4 +6,5 @@ app_name = "connections"
 
 urlpatterns = [
     path("search/", views.search_users, name="search_users"),
+    path("request/<int:user_id>/", views.send_connection_request, name="send_connection_request",),
 ]

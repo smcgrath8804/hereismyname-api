@@ -23,7 +23,24 @@
 
     {% for user in users %}
 
-        <li>{{ user.username }}</li>
+        <li>
+
+            {{ user.username }}
+
+            <form
+                method="post"
+                action="{% url 'connections:send_connection_request' user.id %}"
+                style="display:inline;"
+            >
+                {% csrf_token %}
+
+                <button type="submit">
+                    Send Connection Request
+                </button>
+
+            </form>
+
+        </li>
 
     {% endfor %}
 
