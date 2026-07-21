@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>My Connections</h2>
+
+{% if connections %}
+
+    {% for connection in connections %}
+
+        <div class="card mb-3">
+
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    {{ connection.requester.username }}
+                </h5>
+
+                <p class="text-muted">
+                    {{ connection.requester.email }}
+                </p>
+
+                <p>
+                    <strong>Relationship:</strong>
+                    {{ connection.get_relationship_display }}
+                </p>
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="alert alert-secondary">
+        You have no connections yet.
+    </div>
+
+{% endif %}
+
+{% endblock %}

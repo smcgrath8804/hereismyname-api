@@ -100,3 +100,18 @@ def review_request(request, connection_id):
 
     return redirect("connections:pending_requests")
 
+@login_required
+def connections_list(request):
+
+    connections = Connection.objects.filter(
+        owner=request.user,
+        relationship__isnull=False,
+    ).order_by("requester__username")
+
+    return render(
+        request,
+        "connections/connections_list.html",
+        {
+            "connections": connections,
+        },
+    )
