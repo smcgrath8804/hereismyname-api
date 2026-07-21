@@ -5,46 +5,71 @@
 <h2>Find People</h2>
 
 <form method="get">
-    <input
-        type="text"
-        name="q"
-        value="{{ query }}"
-        placeholder="Search username"
-    >
+    <div class="input-group mb-4">
+        <input class="form-control"
+               type="text"
+               name="q"
+               placeholder="Search for people..."
+               value="{{ query }}">
 
-    <button type="submit">
-        Search
-    </button>
+        <button class="btn btn-primary">Search</button>
+    </div>
+
 </form>
 
 {% if users %}
 
-    <ul>
-
     {% for user in users %}
 
-        <li>
+        <div class="card mb-3">
 
-            {{ user.username }}
+            <div class="card-body">
 
-            <form
-                method="post"
-                action="{% url 'connections:send_connection_request' user.id %}"
-                style="display:inline;"
-            >
-                {% csrf_token %}
+                <h5 class="card-title">
+                    {{ user.username }}
+                </h5>
 
-                <button type="submit">
-                    Send Connection Request
-                </button>
+                <p class="text-muted mb-3">
+                    {{ user.email }}
+                </p>
 
-            </form>
+                {% if user.id in requested_user_ids %}
 
-        </li>
+                    <span class="badge bg-success">
+                        Connection request sent
+                    </span>
+
+                {% else %}
+
+                    <form
+                        method="post"
+                        action="{% url 'connections:send_connection_request' user.id %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            class="btn btn-primary btn-sm"
+                            type="submit"
+                        >
+                            Send Connection Request
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        </div>
 
     {% endfor %}
 
-    </ul>
+{% elif query %}
+
+    <div class="alert alert-secondary">
+        No users found matching "<strong>{{ query }}</strong>".
+    </div>
 
 {% endif %}
 

@@ -16,11 +16,23 @@ def search_users(request):
     if query:
         users = User.objects.filter(
             username__icontains=query
-        ).exclude(id=request.user.id)
+        ).exclude(
+            id=request.user.id
+        )
+
+        existing_requests = Connection.objects.filter(
+            requester=request.user,
+            owner__in=users,
+        )
+
+        requested_user_ids = set(
+            existing_requests.values_list("owner_id", flat=True)
+        )
 
     context = {
         "query": query,
         "users": users,
+        "requested_user_ids": requested_user_ids if query else set(),
     }
 
     return render(request, "connections/search_users.html", context)
