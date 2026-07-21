@@ -5,7 +5,6 @@ from .forms import ProfileForm
 from .models import Profile
 from connections.models import Connection
 from visibility.models import VisibilityRule
-from users.models import User
 
 
 def profile_view(request, username):
@@ -14,8 +13,6 @@ def profile_view(request, username):
         Profile,
         user__username=username
     )
-
-    viewer_username = request.GET.get("viewer")
 
     visible_fields = {}
 
@@ -33,36 +30,58 @@ def profile_view(request, username):
 
     else:
 
-        if viewer_username:
+        if request.user.is_authenticated:
 
             try:
 
-                viewer = User.objects.get(
-                    username=viewer_username
-                )
-
                 connection = Connection.objects.get(
-                    from_user=viewer,
-                    to_user=profile.user
+                    owner=profile.user,
+                    requester=request.user
                 )
 
                 rules = VisibilityRule.objects.filter(
                     owner=profile.user,
-                    visible_to=connection.connection_type
+                    visible_to=connection.relationship
                 )
 
                 for rule in rules:
-
                     visible_fields[rule.field_name] = getattr(
                         profile,
                         rule.field_name
                     )
 
-            except (
-                User.DoesNotExist,
-                Connection.DoesNotExist
-            ):
-                pass
+
+            except Connection.DoesNotExist:
+
+                rules = VisibilityRule.objects.filter(
+
+                    owner=profile.user,
+
+                    visible_to="public"
+
+                )
+
+                for rule in rules:
+                    visible_fields[rule.field_name] = getattr(
+
+                        profile,
+
+                        rule.field_name
+
+                    )
+
+        else:
+
+            rules = VisibilityRule.objects.filter(
+                owner=profile.user,
+                visible_to="public"
+            )
+
+            for rule in rules:
+                visible_fields[rule.field_name] = getattr(
+                    profile,
+                    rule.field_name
+                )
 
     return render(
         request,
