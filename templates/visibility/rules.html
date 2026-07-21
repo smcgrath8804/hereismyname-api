@@ -39,19 +39,47 @@ Visibility Rules
 
             <tbody>
 
-                {% for field_name, field_label in profile_fields %}
+                {% for field in profile_fields %}
 
                 <tr>
 
-                    <td>{{ field_label }}</td>
+                    <td>{{ field.label }}</td>
 
-                    <td class="text-center"><input class="form-check-input" type="checkbox" name="{{ field_name }}_public"></td>
+                    <td class="text-center">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="{{ field.name }}_public"
+                            {% if field.public %}checked{% endif %}
+                        >
+                    </td>
 
-                    <td class="text-center"><input class="form-check-input" type="checkbox" name="{{ field_name }}_professional"></td>
+                    <td class="text-center">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="{{ field.name }}_professional"
+                            {% if field.professional %}checked{% endif %}
+                        >
+                    </td>
 
-                    <td class="text-center"><input class="form-check-input" type="checkbox" name="{{ field_name }}_personal"></td>
+                    <td class="text-center">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="{{ field.name }}_personal"
+                            {% if field.personal %}checked{% endif %}
+                        >
+                    </td>
 
-                    <td class="text-center"><input class="form-check-input" type="checkbox" name="{{ field_name }}_general"></td>
+                    <td class="text-center">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="{{ field.name }}_general"
+                            {% if field.general %}checked{% endif %}
+                        >
+                    </td>
 
                 </tr>
 

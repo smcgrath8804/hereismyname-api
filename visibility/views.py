@@ -31,8 +31,25 @@ def visibility_rules(request):
 
     saved_rules = VisibilityRule.objects.filter(owner=request.user)
 
+    selected = {
+        (rule.field_name, rule.visible_to)
+        for rule in saved_rules
+    }
+
+    profile_fields = []
+
+    for field_name, field_label in PROFILE_FIELDS:
+        profile_fields.append({
+            "name": field_name,
+            "label": field_label,
+            "public": (field_name, "public") in selected,
+            "professional": (field_name, "professional") in selected,
+            "personal": (field_name, "personal") in selected,
+            "general": (field_name, "general") in selected,
+        })
+
     context = {
-        "profile_fields": PROFILE_FIELDS,
+        "profile_fields": profile_fields,
     }
 
     return render(request, "visibility/rules.html", context)
