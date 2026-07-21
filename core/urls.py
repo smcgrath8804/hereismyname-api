@@ -29,4 +29,6 @@ urlpatterns = [
     path("profiles/", include("profiles.urls")),
 
     path("connections/", include("connections.urls")),
+
+    path("visibility/", include("visibility.urls")),
 ]

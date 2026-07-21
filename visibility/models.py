@@ -1,21 +1,16 @@
 from django.conf import settings
 from django.db import models
+from .constants import PROFILE_FIELDS
 
 
 class VisibilityRule(models.Model):
 
-    FIELD_CHOICES = [
-        ("local_language_name", "Name (Local Language)"),
-        ("email", "Email"),
-        ("phone", "Phone"),
-        ("job_title", "Job Title"),
-        ("company", "Company"),
-        ("bio", "Bio"),
-    ]
+    FIELD_CHOICES = PROFILE_FIELDS
 
     CONNECTION_TYPES = [
-        ("personal", "Personal"),
+        ("public", "Public"),
         ("professional", "Professional"),
+        ("personal", "Personal"),
         ("general", "General"),
     ]
 
@@ -33,3 +28,11 @@ class VisibilityRule(models.Model):
         max_length=20,
         choices=CONNECTION_TYPES
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["owner", "field_name", "visible_to"],
+                name="unique_visibility_rule",
+            )
+        ]

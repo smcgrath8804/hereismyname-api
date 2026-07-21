@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+Visibility Rules
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">Visibility Rules</h1>
+
+<ul>
+
+    {% for field_name, field_label in profile_fields %}
+
+        <li>{{ field_label }}</li>
+
+    {% endfor %}
+
+</ul>
+
+{% endblock %}
