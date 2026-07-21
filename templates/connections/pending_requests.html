@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Pending Requests</h2>
+
+{% if requests %}
+
+    {% for connection in requests %}
+
+        <div class="card mb-3">
+
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    {{ connection.requester.username }}
+                </h5>
+
+                <p class="text-muted">
+                    {{ connection.requester.email }}
+                </p>
+
+                <select class="form-select">
+
+                    <option>Public</option>
+                    <option>Professional</option>
+                    <option>Personal</option>
+                    <option>General</option>
+
+                </select>
+
+                <button
+                    class="btn btn-primary mt-3"
+                    disabled
+                >
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="alert alert-secondary">
+        You have no pending connection requests.
+    </div>
+
+{% endif %}
+
+{% endblock %}

@@ -57,3 +57,20 @@ def send_connection_request(request, user_id):
     messages.success(request, "Connection request sent.")
 
     return redirect("connections:search_users")
+
+@login_required
+def pending_requests(request):
+
+    requests = Connection.objects.filter(
+        owner=request.user,
+        relationship__isnull=True,
+    )
+
+    return render(
+        request,
+        "connections/pending_requests.html",
+        {
+            "requests": requests,
+        },
+    )
+
