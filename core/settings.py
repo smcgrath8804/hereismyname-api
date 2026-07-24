@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'connections',
     'visibility',
     'links',
+    "api",
 ]
 
 MIDDLEWARE = [
