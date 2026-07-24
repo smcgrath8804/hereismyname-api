@@ -3,29 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import ProfileForm
 from .models import Profile
-from connections.models import Connection
-from visibility.models import VisibilityRule
-
-def get_relationship(viewer, owner):
-
-    if viewer.is_authenticated:
-
-        if viewer == owner:
-            return "owner"
-
-        try:
-
-            connection = Connection.objects.get(
-                owner=owner,
-                requester=viewer,
-            )
-
-            return connection.relationship
-
-        except Connection.DoesNotExist:
-            pass
-
-    return "public"
+from .services import get_visible_fields
 
 
 def profile_view(request, username):
@@ -35,37 +13,10 @@ def profile_view(request, username):
         user__username=username
     )
 
-    relationship = get_relationship(
-        request.user,
-        profile.user
+    visible_fields = get_visible_fields(
+        profile,
+        request.user
     )
-
-    visible_fields = {}
-
-    if relationship == "owner":
-
-        visible_fields = {
-            "display_name": profile.display_name,
-            "local_language_name": profile.local_language_name,
-            "email": profile.email,
-            "phone": profile.phone,
-            "job_title": profile.job_title,
-            "company": profile.company,
-            "bio": profile.bio,
-        }
-
-    else:
-
-        rules = VisibilityRule.objects.filter(
-            owner=profile.user,
-            visible_to=relationship
-        )
-
-        for rule in rules:
-            visible_fields[rule.field_name] = getattr(
-                profile,
-                rule.field_name
-            )
 
     return render(
         request,
