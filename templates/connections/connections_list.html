@@ -20,10 +20,46 @@
                     {{ connection.requester.email }}
                 </p>
 
-                <p>
-                    <strong>Relationship:</strong>
-                    {{ connection.get_relationship_display }}
-                </p>
+                <form method="post">
+
+    {% csrf_token %}
+
+    <input
+        type="hidden"
+        name="connection_id"
+        value="{{ connection.id }}"
+    >
+
+    <label class="form-label">
+        <strong>Relationship</strong>
+    </label>
+
+    <select
+        name="relationship"
+        class="form-select mb-3"
+    >
+
+        {% for value, label in connection.RELATIONSHIP_TYPES %}
+
+            <option
+                value="{{ value }}"
+                {% if connection.relationship == value %}
+                    selected
+                {% endif %}
+            >
+                {{ label }}
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{% url 'profiles:profile' connection.requester.username %}" class="btn btn-outline-secondary">View Profile</a>
+    </div>
+
+</form>
 
             </div>
 

@@ -103,6 +103,41 @@ def review_request(request, connection_id):
 @login_required
 def connections_list(request):
 
+    if request.method == "POST":
+
+        connection = get_object_or_404(
+            Connection,
+            id=request.POST.get("connection_id"),
+            owner=request.user,
+            relationship__isnull=False,
+        )
+
+        relationship = request.POST.get("relationship")
+
+        valid_relationships = {
+            choice[0]
+            for choice in Connection.RELATIONSHIP_TYPES
+        }
+
+        if relationship in valid_relationships:
+
+            connection.relationship = relationship
+            connection.save()
+
+            messages.success(
+                request,
+                "Relationship updated successfully."
+            )
+
+        else:
+
+            messages.error(
+                request,
+                "Invalid relationship selected."
+            )
+
+        return redirect("connections:connections_list")
+
     connections = Connection.objects.filter(
         owner=request.user,
         relationship__isnull=False,
