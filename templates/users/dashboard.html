@@ -38,13 +38,13 @@
 <hr>
 
 <a
-    href="{% url 'edit_profile' %}"
+    href="{% url 'profiles:edit_profile' %}"
     class="btn btn-primary">
     Edit Profile
 </a>
 
 <a
-    href="{% url 'profile' profile.id %}"
+    href="{% url 'profiles:profile' profile.user.username %}"
     class="btn btn-secondary">
     View My Profile
 </a>

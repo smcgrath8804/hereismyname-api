@@ -49,7 +49,18 @@ INSTALLED_APPS = [
     'visibility',
     'links',
     "api",
+    "rest_framework.authtoken",
 ]
+# **TO CHECK** Add the REST framework for the API *DONE*
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
