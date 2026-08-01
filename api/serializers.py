@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class VisibleProfileSerializer(serializers.Serializer):
+class ProfileSerializer(serializers.Serializer):
 
     display_name = serializers.CharField(required=False)
     local_language_name = serializers.CharField(required=False)

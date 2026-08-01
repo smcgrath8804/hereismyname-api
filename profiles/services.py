@@ -1,6 +1,18 @@
 from connections.models import Connection
 from visibility.models import VisibilityRule
 
+## Reusable way to build my profiles each time
+def build_profile_data(profile):
+
+    return {
+        "display_name": profile.display_name,
+        "local_language_name": profile.local_language_name,
+        "email": profile.email,
+        "phone": profile.phone,
+        "job_title": profile.job_title,
+        "company": profile.company,
+        "bio": profile.bio,
+    }
 
 def get_relationship(viewer, owner):
 
@@ -32,16 +44,7 @@ def get_visible_fields(profile, viewer):
     )
 
     if relationship == "owner":
-
-        return {
-            "display_name": profile.display_name,
-            "local_language_name": profile.local_language_name,
-            "email": profile.email,
-            "phone": profile.phone,
-            "job_title": profile.job_title,
-            "company": profile.company,
-            "bio": profile.bio,
-        }
+        return build_profile_data(profile)
 
     visible_fields = {}
 
