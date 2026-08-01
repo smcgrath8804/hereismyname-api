@@ -8,7 +8,7 @@ from rest_framework.permissions import (IsAuthenticated, AllowAny)
 from profiles.models import Profile
 from profiles.services import (get_visible_fields, build_profile_data,)
 
-from .serializers import (LoginSerializer, ProfileSerializer,)
+from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer,)
 
 from django.contrib.auth import authenticate
 from rest_framework import status
@@ -48,6 +48,29 @@ class MyProfileAPIView(APIView):
         )
 
         return Response(serializer.data)
+
+    def patch(self, request):
+
+        profile = request.user.profile
+
+        serializer = UpdateProfileSerializer(
+            data=request.data,
+            partial=True,
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        for field, value in serializer.validated_data.items():
+
+            setattr(profile, field, value,)
+
+        profile.save()
+
+        return Response(
+            ProfileSerializer(build_profile_data(profile)).data
+        )
 
 class LoginAPIView(APIView):
 
