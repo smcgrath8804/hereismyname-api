@@ -10,3 +10,11 @@ class ProfileSerializer(serializers.Serializer):
     job_title = serializers.CharField(required=False)
     company = serializers.CharField(required=False)
     bio = serializers.CharField(required=False)
+
+class LoginSerializer(serializers.Serializer):
+
+    email = serializers.EmailField()
+
+    password = serializers.CharField(
+        write_only=True
+    )

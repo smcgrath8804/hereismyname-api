@@ -140,10 +140,6 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 ## *Added code*
-REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
 AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = "login"

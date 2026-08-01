@@ -1,11 +1,15 @@
 from django.urls import path
 
-from .views import ProfileAPIView
-
-from .views import MyProfileAPIView
+from .views import (LoginAPIView, MyProfileAPIView, ProfileAPIView,)
 
 urlpatterns = [
 
+    path(
+        "login/",
+        LoginAPIView.as_view(),
+        name="api-login",
+    ),
+    
     path(
         "profile/me/",
         MyProfileAPIView.as_view(),
