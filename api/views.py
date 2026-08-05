@@ -8,13 +8,14 @@ from rest_framework.permissions import (IsAuthenticated, AllowAny)
 from profiles.models import Profile
 from profiles.services import (get_visible_fields, build_profile_data,)
 
-from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer, UpdateConnectionSerializer,)
+from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,
+                          UpdateConnectionSerializer, PendingConnectionSerializer,)
 
 from django.contrib.auth import authenticate
 from rest_framework import status
 
 from connections.models import Connection
-from connections.services import build_connection_data
+from connections.services import (build_connection_data, build_pending_connection_data,)
 
 class ProfileAPIView(APIView):
 
@@ -131,6 +132,33 @@ class ConnectionDetailAPIView(APIView):
                 build_connection_data(connection)
             ).data
         )
+
+# Return pending connection requests for authenticated user
+class PendingConnectionsAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        pending = Connection.objects.filter(
+            owner=request.user,
+            relationship__isnull=True,
+        )
+
+        data = []
+
+        for connection in pending:
+
+            data.append(
+                build_pending_connection_data(connection)
+            )
+
+        serializer = PendingConnectionSerializer(
+            data,
+            many=True,
+        )
+
+        return Response(serializer.data)
 
 class LoginAPIView(APIView):
 

@@ -41,3 +41,11 @@ class UpdateConnectionSerializer(serializers.Serializer):
     relationship = serializers.ChoiceField(
         choices = ["public", "personal", "professional", "general",]
     )
+
+# connection requests awaiting review
+class PendingConnectionSerializer(serializers.Serializer):
+
+
+    id = serializers.IntegerField()
+    username = serializers.CharField()
+    display_name = serializers.CharField()

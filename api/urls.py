@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views import (LoginAPIView, MyProfileAPIView, ProfileAPIView, ConnectionsAPIView, ConnectionDetailAPIView)
+from .views import (LoginAPIView, MyProfileAPIView, ProfileAPIView,
+                    ConnectionsAPIView, ConnectionDetailAPIView, PendingConnectionsAPIView)
 
 urlpatterns = [
 
@@ -32,6 +33,12 @@ urlpatterns = [
         "connections/<int:connection_id>/",
         ConnectionDetailAPIView.as_view(),
         name="api-connection-detail",
+    ),
+
+    path(
+        "pending/",
+        PendingConnectionsAPIView.as_view(),
+        name="api-pending-connections",
     ),
 
 ]
