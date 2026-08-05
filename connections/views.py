@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from .models import Connection
 from .services import (create_connection_request, review_connection_request,)
+from .constants import RELATIONSHIP_TYPES
 
 User = get_user_model()
 
@@ -152,5 +153,6 @@ def connections_list(request):
         "connections/connections_list.html",
         {
             "connections": connections,
+            "relationship_types": RELATIONSHIP_TYPES,
         },
     )

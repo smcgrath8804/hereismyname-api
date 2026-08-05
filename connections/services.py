@@ -1,5 +1,6 @@
 from .models import Connection
 from django.utils import timezone
+from .constants import RELATIONSHIP_TYPES
 
 def build_connection_data(connection):
     """ Build a consistent API representation of a connection for re-use """
@@ -40,7 +41,7 @@ def review_connection_request(connection, relationship):
 
     valid_relationships = {
         choice[0]
-        for choice in Connection.RELATIONSHIP_TYPES
+        for choice in RELATIONSHIP_TYPES
     }
 
     if relationship not in valid_relationships:

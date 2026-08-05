@@ -20,4 +20,4 @@ class Profile(models.Model):
     bio = models.TextField(blank=True)
 
     def __str__(self):
-        return self.display_name
+        return self.display_name or self.user.username

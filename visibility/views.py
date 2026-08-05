@@ -2,17 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .constants import PROFILE_FIELDS
 from .models import VisibilityRule
-
+from connections.constants import RELATIONSHIP_TYPES
 
 @login_required
 def visibility_rules(request):
-
-    RELATIONSHIP_TYPES = [
-        "public",
-        "professional",
-        "personal",
-        "general",
-    ]
 
     if request.method == "POST":
         VisibilityRule.objects.filter(owner=request.user).delete()

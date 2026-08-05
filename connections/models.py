@@ -1,15 +1,9 @@
 from django.conf import settings
 from django.db import models
 
+from .constants import RELATIONSHIP_TYPES
 
 class Connection(models.Model):
-
-    RELATIONSHIP_TYPES = [
-        ("public", "Public"),
-        ("personal", "Personal"),
-        ("professional", "Professional"),
-        ("general", "General"),
-    ]
 
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,

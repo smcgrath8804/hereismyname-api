@@ -126,13 +126,10 @@ class ConnectionsAPIView(APIView):
             relationship__isnull=True
         )
 
-        data = []
-
-        for connection in connections:
-
-            data.append(
-                build_connection_data(connection)
-            )
+        data = [
+            build_connection_data(connection)
+            for connection in connections
+        ]
 
         serializer = ConnectionSerializer(
             data,
@@ -184,13 +181,10 @@ class PendingConnectionsAPIView(APIView):
             relationship__isnull=True,
         )
 
-        data = []
-
-        for connection in pending:
-
-            data.append(
-                build_pending_connection_data(connection)
-            )
+        data = [
+            build_pending_connection_data(connection)
+            for connection in pending
+        ]
 
         serializer = PendingConnectionSerializer(
             data,

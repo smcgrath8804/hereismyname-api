@@ -2,17 +2,11 @@ from django.conf import settings
 from django.db import models
 from .constants import PROFILE_FIELDS
 
+from connections.constants import RELATIONSHIP_TYPES
 
 class VisibilityRule(models.Model):
 
     FIELD_CHOICES = PROFILE_FIELDS
-
-    CONNECTION_TYPES = [
-        ("public", "Public"),
-        ("professional", "Professional"),
-        ("personal", "Personal"),
-        ("general", "General"),
-    ]
 
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -26,7 +20,7 @@ class VisibilityRule(models.Model):
 
     visible_to = models.CharField(
         max_length=20,
-        choices=CONNECTION_TYPES
+        choices=RELATIONSHIP_TYPES
     )
 
     class Meta:
