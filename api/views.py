@@ -9,13 +9,50 @@ from profiles.models import Profile
 from profiles.services import (get_visible_fields, build_profile_data,)
 
 from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,
-                          UpdateConnectionSerializer, PendingConnectionSerializer,)
+                          UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer,)
 
-from django.contrib.auth import authenticate
+from django.contrib.auth import (authenticate, get_user_model)
 from rest_framework import status
 
 from connections.models import Connection
-from connections.services import (build_connection_data, build_pending_connection_data,)
+from connections.services import (build_connection_data, build_pending_connection_data, create_connection_request,)
+
+User = get_user_model()
+
+class LoginAPIView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        serializer = LoginSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        user = authenticate(
+            email=serializer.validated_data["email"],
+            password=serializer.validated_data["password"],
+        )
+
+        if user is None:
+
+            return Response(
+                {
+                    "error": "Invalid username or password."
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        token, created = Token.objects.get_or_create(
+            user=user
+        )
+
+        return Response(
+            {
+                "token": token.key
+            }
+        )
+
 
 class ProfileAPIView(APIView):
 
@@ -160,36 +197,54 @@ class PendingConnectionsAPIView(APIView):
 
         return Response(serializer.data)
 
-class LoginAPIView(APIView):
+# Allow the authenticated user to send a connection request
+class ConnectionRequestAPIView(APIView):
 
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
 
-        serializer = LoginSerializer(data=request.data)
-
-        serializer.is_valid(raise_exception=True)
-
-        user = authenticate(
-            email=serializer.validated_data["email"],
-            password=serializer.validated_data["password"],
+        serializer = ConnectionRequestSerializer(
+            data=request.data
         )
 
-        if user is None:
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        owner = get_object_or_404(
+            User,
+            username=serializer.validated_data["username"],
+        )
+
+        try:
+
+            connection, created = create_connection_request(
+                owner,
+                request.user,
+            )
+
+        except ValueError as error:
 
             return Response(
                 {
-                    "error": "Invalid username or password."
+                    "error": str(error)
                 },
-                status=status.HTTP_401_UNAUTHORIZED,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        token, created = Token.objects.get_or_create(
-            user=user
-        )
+        if created:
+
+            return Response(
+                {
+                    "message": "Connection request sent."
+                },
+                status=status.HTTP_201_CREATED,
+            )
 
         return Response(
             {
-                "token": token.key
-            }
+                "error": "Connection request already exists."
+            },
+            status=status.HTTP_400_BAD_REQUEST,
         )

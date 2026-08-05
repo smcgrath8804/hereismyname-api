@@ -49,3 +49,8 @@ class PendingConnectionSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     username = serializers.CharField()
     display_name = serializers.CharField()
+
+# Send a connection request to another user
+class ConnectionRequestSerializer(serializers.Serializer):
+
+    username = serializers.CharField()

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.utils import timezone
 
 from .models import Connection
+from .services import create_connection_request
 
 User = get_user_model()
 
@@ -46,16 +47,22 @@ def send_connection_request(request, user_id):
 
     owner = get_object_or_404(User, id=user_id)
 
-    if owner == request.user:
-        messages.error(request, "You cannot send a connection request to yourself.")
+    try:
+        connection, created = create_connection_request(
+            owner,
+            request.user,
+        )
+
+    except ValueError as error:
+        messages.error(request, str(error))
+
         return redirect("connections:search_users")
 
-    Connection.objects.get_or_create(
-        owner=owner,
-        requester=request.user,
-    )
+    if created:
+        messages.success(request, "Connection request sent.")
 
-    messages.success(request, "Connection request sent.")
+    else:
+        messages.info(request,"Connection request already exists.")
 
     return redirect("connections:search_users")
 
