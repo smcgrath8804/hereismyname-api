@@ -14,24 +14,23 @@ class ProfileSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
 
     email = serializers.EmailField()
-
-    password = serializers.CharField(
-        write_only=True ## Password will never be displayed in API
-    )
+    password = serializers.CharField(write_only=True) ## Password will never be displayed in API
 
  ## Add the ability to update individual fields in the profile
 class UpdateProfileSerializer(serializers.Serializer):
 
     display_name = serializers.CharField(required=False)
-
     local_language_name = serializers.CharField(required=False)
-
     email = serializers.EmailField(required=False)
-
     phone = serializers.CharField(required=False)
-
     job_title = serializers.CharField(required=False)
-
     company = serializers.CharField(required=False)
-
     bio = serializers.CharField(required=False)
+
+# conection owned by the authenticated user.
+class ConnectionSerializer(serializers.Serializer):
+
+    id = serializers.IntegerField()
+    username = serializers.CharField()
+    display_name = serializers.CharField()
+    relationship = serializers.CharField()

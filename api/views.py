@@ -8,11 +8,12 @@ from rest_framework.permissions import (IsAuthenticated, AllowAny)
 from profiles.models import Profile
 from profiles.services import (get_visible_fields, build_profile_data,)
 
-from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer,)
+from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,)
 
 from django.contrib.auth import authenticate
 from rest_framework import status
 
+from connections.models import Connection
 
 class ProfileAPIView(APIView):
 
@@ -71,6 +72,36 @@ class MyProfileAPIView(APIView):
         return Response(
             ProfileSerializer(build_profile_data(profile)).data
         )
+
+# Return all connections for the logged-in user.
+class ConnectionsAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        connections = Connection.objects.filter(
+            owner=request.user
+        ).exclude(
+            relationship__isnull=True
+        )
+
+        data = []
+
+        for connection in connections:
+
+            data.append({
+                "id": connection.id,
+                "username": connection.requester.username,
+                "display_name": connection.requester.profile.display_name,
+                "relationship": connection.relationship,
+            })
+
+        serializer = ConnectionSerializer(
+            data,
+            many=True,
+        )
+
+        return Response(serializer.data)
 
 class LoginAPIView(APIView):
 
