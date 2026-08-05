@@ -34,3 +34,10 @@ class ConnectionSerializer(serializers.Serializer):
     username = serializers.CharField()
     display_name = serializers.CharField()
     relationship = serializers.CharField()
+
+# Allow owner to change the relationship type
+class UpdateConnectionSerializer(serializers.Serializer):
+
+    relationship = serializers.ChoiceField(
+        choices = ["public", "personal", "professional", "general",]
+    )

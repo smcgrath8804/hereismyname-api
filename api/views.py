@@ -8,7 +8,7 @@ from rest_framework.permissions import (IsAuthenticated, AllowAny)
 from profiles.models import Profile
 from profiles.services import (get_visible_fields, build_profile_data,)
 
-from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,)
+from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer, UpdateConnectionSerializer,)
 
 from django.contrib.auth import authenticate
 from rest_framework import status
@@ -102,6 +102,42 @@ class ConnectionsAPIView(APIView):
         )
 
         return Response(serializer.data)
+
+# Allow the owner to update one of their connections
+class ConnectionDetailAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, connection_id):
+
+        connection = get_object_or_404(
+            Connection,
+            id=connection_id,
+            owner=request.user, # Only return connectons for logged in user
+        )
+
+        serializer = UpdateConnectionSerializer(
+            data=request.data
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        connection.relationship = serializer.validated_data["relationship"]
+
+        connection.save()
+
+        return Response(
+            ConnectionSerializer(
+                {
+                    "id": connection.id,
+                    "username": connection.requester.username,
+                    "display_name": connection.requester.profile.display_name,
+                    "relationship": connection.relationship,
+                }
+            ).data
+        )
 
 class LoginAPIView(APIView):
 

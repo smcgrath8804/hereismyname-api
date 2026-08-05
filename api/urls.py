@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (LoginAPIView, MyProfileAPIView, ProfileAPIView, ConnectionsAPIView)
+from .views import (LoginAPIView, MyProfileAPIView, ProfileAPIView, ConnectionsAPIView, ConnectionDetailAPIView)
 
 urlpatterns = [
 
@@ -26,6 +26,12 @@ urlpatterns = [
         "connections/",
         ConnectionsAPIView.as_view(),
         name="api-connections",
+    ),
+
+    path(
+        "connections/<int:connection_id>/",
+        ConnectionDetailAPIView.as_view(),
+        name="api-connection-detail",
     ),
 
 ]
