@@ -14,6 +14,7 @@ from django.contrib.auth import authenticate
 from rest_framework import status
 
 from connections.models import Connection
+from connections.services import build_connection_data
 
 class ProfileAPIView(APIView):
 
@@ -89,12 +90,9 @@ class ConnectionsAPIView(APIView):
 
         for connection in connections:
 
-            data.append({
-                "id": connection.id,
-                "username": connection.requester.username,
-                "display_name": connection.requester.profile.display_name,
-                "relationship": connection.relationship,
-            })
+            data.append(
+                build_connection_data(connection)
+            )
 
         serializer = ConnectionSerializer(
             data,
@@ -130,12 +128,7 @@ class ConnectionDetailAPIView(APIView):
 
         return Response(
             ConnectionSerializer(
-                {
-                    "id": connection.id,
-                    "username": connection.requester.username,
-                    "display_name": connection.requester.profile.display_name,
-                    "relationship": connection.relationship,
-                }
+                build_connection_data(connection)
             ).data
         )
 
