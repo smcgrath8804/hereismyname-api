@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.utils import timezone
 
 from .models import Connection
-from .services import create_connection_request
+from .services import (create_connection_request, review_connection_request,)
 
 User = get_user_model()
 
@@ -121,26 +121,23 @@ def connections_list(request):
 
         relationship = request.POST.get("relationship")
 
-        valid_relationships = {
-            choice[0]
-            for choice in Connection.RELATIONSHIP_TYPES
-        }
+        try:
 
-        if relationship in valid_relationships:
-
-            connection.relationship = relationship
-            connection.save()
+            review_connection_request(
+                connection,
+                relationship,
+            )
 
             messages.success(
                 request,
-                "Relationship updated successfully."
+                "Connection updated successfully."
             )
 
-        else:
+        except ValueError as error:
 
             messages.error(
                 request,
-                "Invalid relationship selected."
+                str(error),
             )
 
         return redirect("connections:connections_list")

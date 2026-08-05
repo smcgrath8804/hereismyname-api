@@ -9,13 +9,15 @@ from profiles.models import Profile
 from profiles.services import (get_visible_fields, build_profile_data,)
 
 from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,
-                          UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer,)
+                          UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer,
+                          ReviewConnectionSerializer,)
 
 from django.contrib.auth import (authenticate, get_user_model)
 from rest_framework import status
 
 from connections.models import Connection
-from connections.services import (build_connection_data, build_pending_connection_data, create_connection_request,)
+from connections.services import (build_connection_data, build_pending_connection_data, create_connection_request,
+                                  review_connection_request,)
 
 User = get_user_model()
 
@@ -247,4 +249,49 @@ class ConnectionRequestAPIView(APIView):
                 "error": "Connection request already exists."
             },
             status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+# Review a pending connection request
+class ReviewConnectionAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, connection_id):
+
+        connection = get_object_or_404(
+            Connection,
+            id=connection_id,
+            owner=request.user,
+            relationship__isnull=True,
+        )
+
+        serializer = ReviewConnectionSerializer(
+            data=request.data
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        try:
+
+            review_connection_request(
+                connection,
+                serializer.validated_data["relationship"],
+            )
+
+        except ValueError as error:
+
+            return Response(
+                {
+                    "error": str(error)
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            ConnectionSerializer(
+                build_connection_data(connection)
+            ).data
         )

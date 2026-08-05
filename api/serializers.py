@@ -54,3 +54,16 @@ class PendingConnectionSerializer(serializers.Serializer):
 class ConnectionRequestSerializer(serializers.Serializer):
 
     username = serializers.CharField()
+
+
+# Review a pending connection request
+class ReviewConnectionSerializer(serializers.Serializer):
+
+    relationship = serializers.ChoiceField(
+        choices=[
+            "public",
+            "personal",
+            "professional",
+            "general",
+        ]
+    )

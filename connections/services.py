@@ -1,4 +1,5 @@
 from .models import Connection
+from django.utils import timezone
 
 def build_connection_data(connection):
     """ Build a consistent API representation of a connection for re-use """
@@ -32,3 +33,24 @@ def create_connection_request(owner, requester):
         requester=requester,
     )
     return connection, created
+
+
+def review_connection_request(connection, relationship):
+    """ Review a pending connection request. """
+
+    valid_relationships = {
+        choice[0]
+        for choice in Connection.RELATIONSHIP_TYPES
+    }
+
+    if relationship not in valid_relationships:
+        raise ValueError(
+            "Invalid relationship selected."
+        )
+
+    connection.relationship = relationship
+    connection.reviewed_at = timezone.now()
+
+    connection.save()
+
+    return connection
