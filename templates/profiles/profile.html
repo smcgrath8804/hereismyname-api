@@ -1,62 +1,199 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{ profile.display_name }}
+{% if visible_fields.display_name %}
+    {{ visible_fields.display_name }}
+{% else %}
+    {{ profile.user.username }}
+{% endif %}
 {% endblock %}
 
 {% block content %}
 
-<h1>{{ profile.display_name }}</h1>
+<div class="container">
 
-{% if visible_fields.job_title or visible_fields.company %}
-<p class="text-muted">
-    {% if visible_fields.job_title %}
-        {{ visible_fields.job_title }}
+    <!-- ============================= -->
+    <!-- Header -->
+    <!-- ============================= -->
+
+    <div class="text-center mb-4">
+
+        {% if visible_fields.profile_picture %}
+
+            <img
+                src="{{ visible_fields.profile_picture.url }}"
+                alt="Profile Picture"
+                class="img-thumbnail mb-3"
+                style="width: 180px; height: 180px; object-fit: cover;"
+            >
+
+        {% endif %}
+
+        <h1>
+
+            {% if visible_fields.display_name %}
+                {{ visible_fields.display_name }}
+            {% else %}
+                {{ profile.user.username }}
+            {% endif %}
+
+        </h1>
+
+        {% if visible_fields.job_title or visible_fields.company %}
+
+            <p class="text-muted fs-5">
+
+                {% if visible_fields.job_title %}
+                    {{ visible_fields.job_title }}
+                {% endif %}
+
+                {% if visible_fields.job_title and visible_fields.company %}
+                    at
+                {% endif %}
+
+                {% if visible_fields.company %}
+                    {{ visible_fields.company }}
+                {% endif %}
+
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- Identity -->
+    <!-- ============================= -->
+
+    {% if visible_fields.local_language_name or visible_fields.date_of_birth or visible_fields.nationality or visible_fields.languages_spoken %}
+
+        <h3>Identity</h3>
+        <hr>
+
+        {% if visible_fields.local_language_name %}
+            <p><strong>Local Name:</strong> {{ visible_fields.local_language_name }}</p>
+        {% endif %}
+
+        {% if visible_fields.date_of_birth %}
+            <p><strong>Date of Birth:</strong> {{ visible_fields.date_of_birth }}</p>
+        {% endif %}
+
+        {% if visible_fields.nationality %}
+            <p><strong>Nationality:</strong> {{ visible_fields.nationality }}</p>
+        {% endif %}
+
+        {% if visible_fields.languages_spoken %}
+            <p><strong>Languages:</strong> {{ visible_fields.languages_spoken }}</p>
+        {% endif %}
+
     {% endif %}
 
-    {% if visible_fields.job_title and visible_fields.company %}
-        at
+
+    <!-- ============================= -->
+    <!-- Location -->
+    <!-- ============================= -->
+
+    {% if visible_fields.country or visible_fields.city %}
+
+        <h3>Location</h3>
+        <hr>
+
+        {% if visible_fields.country %}
+            <p><strong>Country:</strong> {{ visible_fields.country }}</p>
+        {% endif %}
+
+        {% if visible_fields.city %}
+            <p><strong>City:</strong> {{ visible_fields.city }}</p>
+        {% endif %}
+
     {% endif %}
 
-    {% if visible_fields.company %}
-        {{ visible_fields.company }}
+
+    <!-- ============================= -->
+    <!-- Contact -->
+    <!-- ============================= -->
+
+    {% if visible_fields.email or visible_fields.phone or visible_fields.website %}
+
+        <h3>Contact</h3>
+        <hr>
+
+        {% if visible_fields.email %}
+            <p><strong>Email:</strong> {{ visible_fields.email }}</p>
+        {% endif %}
+
+        {% if visible_fields.phone %}
+            <p><strong>Phone:</strong> {{ visible_fields.phone }}</p>
+        {% endif %}
+
+        {% if visible_fields.website %}
+            <p>
+                <strong>Website:</strong>
+                <a href="{{ visible_fields.website }}" target="_blank">
+                    {{ visible_fields.website }}
+                </a>
+            </p>
+        {% endif %}
+
     {% endif %}
-</p>
-{% endif %}
 
-<hr>
 
-{% if visible_fields.bio %}
-<h3>About</h3>
+    <!-- ============================= -->
+    <!-- Professional -->
+    <!-- ============================= -->
 
-<p>
-    {{ visible_fields.bio }}
-</p>
+    {% if visible_fields.job_title or visible_fields.company or visible_fields.industry or visible_fields.skills or visible_fields.years_experience %}
 
-<hr>
-{% endif %}
+        <h3>Professional</h3>
+        <hr>
 
-<h3>Profile Information</h3>
+        {% if visible_fields.job_title %}
+            <p><strong>Job Title:</strong> {{ visible_fields.job_title }}</p>
+        {% endif %}
 
-{% if visible_fields.local_language_name %}
-<p>
-    <strong>Local Name:</strong><br>
-    {{ visible_fields.local_language_name }}
-</p>
-{% endif %}
+        {% if visible_fields.company %}
+            <p><strong>Company:</strong> {{ visible_fields.company }}</p>
+        {% endif %}
 
-{% if visible_fields.email %}
-<p>
-    <strong>Email:</strong><br>
-    {{ visible_fields.email }}
-</p>
-{% endif %}
+        {% if visible_fields.industry %}
+            <p><strong>Industry:</strong> {{ visible_fields.industry }}</p>
+        {% endif %}
 
-{% if visible_fields.phone %}
-<p>
-    <strong>Phone:</strong><br>
-    {{ visible_fields.phone }}
-</p>
-{% endif %}
+        {% if visible_fields.skills %}
+            <p><strong>Skills:</strong> {{ visible_fields.skills }}</p>
+        {% endif %}
+
+        {% if visible_fields.years_experience %}
+            <p><strong>Years Experience:</strong> {{ visible_fields.years_experience }}</p>
+        {% endif %}
+
+    {% endif %}
+
+
+    <!-- ============================= -->
+    <!-- About -->
+    <!-- ============================= -->
+
+    {% if visible_fields.bio or visible_fields.interests or visible_fields.hobbies %}
+
+        <h3>About</h3>
+        <hr>
+
+        {% if visible_fields.bio %}
+            <p>{{ visible_fields.bio }}</p>
+        {% endif %}
+
+        {% if visible_fields.interests %}
+            <p><strong>Interests:</strong> {{ visible_fields.interests }}</p>
+        {% endif %}
+
+        {% if visible_fields.hobbies %}
+            <p><strong>Hobbies:</strong> {{ visible_fields.hobbies }}</p>
+        {% endif %}
+
+    {% endif %}
+
+</div>
 
 {% endblock %}

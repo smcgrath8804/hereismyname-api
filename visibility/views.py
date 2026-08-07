@@ -12,7 +12,8 @@ def visibility_rules(request):
 
         for field_name, _ in PROFILE_FIELDS:
 
-            for relationship in RELATIONSHIP_TYPES:
+            for relationship, _ in RELATIONSHIP_TYPES:
+
                 checkbox_name = f"{field_name}_{relationship}"
 
                 if checkbox_name in request.POST:
