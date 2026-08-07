@@ -37,6 +37,7 @@ def edit_profile(request):
 
         form = ProfileForm(
             request.POST,
+            request.FILES,
             instance=profile
         )
 

@@ -4,6 +4,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
         ("visibility", "0004_visibilityrule_unique_visibility_rule"),
     ]
