@@ -30,3 +30,40 @@ class VisibilityRule(models.Model):
                 name="unique_visibility_rule",
             )
         ]
+
+class LinkVisibilityRule(models.Model):
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+
+    link = models.ForeignKey(
+        "links.ProfileLink",
+        on_delete=models.CASCADE,
+        related_name="visibility_rules",
+    )
+
+    visible_to = models.CharField(
+        max_length=20,
+        choices=RELATIONSHIP_TYPES,
+    )
+
+    class Meta:
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "owner",
+                    "link",
+                    "visible_to",
+                ],
+                name="unique_link_visibility_rule",
+            )
+        ]
+
+    def __str__(self):
+
+        return (
+            f"{self.link} - {self.visible_to}"
+        )
