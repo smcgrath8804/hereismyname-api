@@ -24,8 +24,8 @@ def get_relationship(viewer, owner):
         try:
 
             connection = Connection.objects.get(
-                owner=owner,
-                requester=viewer,
+                owner = owner,
+                requester = viewer,
             )
 
             return connection.relationship
@@ -49,8 +49,8 @@ def get_visible_fields(profile, viewer):
     visible_fields = {}
 
     rules = VisibilityRule.objects.filter(
-        owner=profile.user,
-        visible_to=relationship
+        owner = profile.user,
+        visible_to = relationship
     )
 
     for rule in rules:
