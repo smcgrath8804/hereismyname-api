@@ -57,18 +57,20 @@
                         <li>
                             <a
                                 class="dropdown-item"
-                                href="{% url 'connections:pending_requests' %}"
+                                href="{% url 'connections:connections_list' %}"
                             >
-                                Pending Requests
+                                My Connections
                             </a>
                         </li>
+
+                        <li><hr class="dropdown-divider"></li>
 
                         <li>
                             <a
                                 class="dropdown-item"
-                                href="{% url 'connections:connections_list' %}"
+                                href="{% url 'links:links_list' %}"
                             >
-                                My Connections
+                                My Links
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
@@ -109,11 +111,6 @@
                 <a class="btn btn-primary btn-sm"
                    href="{% url 'register' %}">
                     Register
-                </a>
-
-                <a class="btn btn-outline-light btn-sm me-2"
-                   href="{% url 'connections:pending_requests' %}">
-                    Pending Requests
                 </a>
 
             {% endif %}

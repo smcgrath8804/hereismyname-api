@@ -9,92 +9,288 @@ Visibility Rules
 <div class="card">
 
     <div class="card-header">
-        <h3 class="mb-0">Visibility Rules</h3>
+        <h3 class="mb-0">
+            Visibility Rules
+        </h3>
     </div>
 
     <div class="card-body">
 
         <p class="text-muted">
-            Configure which relationship types can view each profile field.
+            Configure who can view your profile information and identity links.
         </p>
 
 
-    <form method="post">
+        <!-- Navigation Tabs -->
 
-        {% csrf_token %}
+        <ul class="nav nav-tabs mb-4" id="visibilityTabs" role="tablist">
 
-        <table class="table">
+            <li class="nav-item">
 
-            <thead>
+                <button
+                    class="nav-link active" data-bs-toggle="tab"
+                    data-bs-target="#fields" type="button"
+                >
+                    Profile Fields
+                </button>
 
-                <tr>
-                    <th style="width:40%">Profile Field</th>
-                    <th class="text-center">Public</th>
-                    <th class="text-center">Professional</th>
-                    <th class="text-center">Personal</th>
-                    <th class="text-center">General</th>
-                </tr>
+            </li>
 
-            </thead>
+            <li class="nav-item">
 
-            <tbody>
+                <button
+                    class="nav-link" data-bs-toggle="tab"
+                    data-bs-target="#links" type="button"
+                >
+                    Profile Links
+                </button>
 
-                {% for field in profile_fields %}
+            </li>
 
-                <tr>
+        </ul>
 
-                    <td>{{ field.label }}</td>
+        <form method="post">
 
-                    <td class="text-center">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="{{ field.name }}_public"
-                            {% if field.public %}checked{% endif %}
-                        >
-                    </td>
+            {% csrf_token %}
 
-                    <td class="text-center">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="{{ field.name }}_professional"
-                            {% if field.professional %}checked{% endif %}
-                        >
-                    </td>
+            <div class="tab-content">
 
-                    <td class="text-center">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="{{ field.name }}_personal"
-                            {% if field.personal %}checked{% endif %}
-                        >
-                    </td>
+                <!-- Profile Fields Tab -->
 
-                    <td class="text-center">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="{{ field.name }}_general"
-                            {% if field.general %}checked{% endif %}
-                        >
-                    </td>
+                <div class="tab-pane fade show active" id="fields">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width:40%">
+                                    Profile Field
+                                </th>
 
-                </tr>
+                                <th class="text-center">
+                                    Public
+                                </th>
 
-                {% endfor %}
+                                <th class="text-center">
+                                    Professional
+                                </th>
 
-            </tbody>
+                                <th class="text-center">
+                                    Personal
+                                </th>
 
-        </table>
+                                <th class="text-center">
+                                    General
+                                </th>
+                            </tr>
 
-        <div class="d-flex justify-content-end mt-3">
+                        </thead>
 
-            <button class="btn btn-primary" type="submit">Save Changes</button>
+                        <tbody>
 
-        </div>
-    </form>
+                            {% for field in profile_fields %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ field.label }}
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <input
+                                            class="form-check-input" type="checkbox"
+                                            name="{{ field.name }}_public"
+                                            {% if field.public %}checked{% endif %}
+                                        >
+
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <input
+                                            class="form-check-input" type="checkbox"
+                                            name="{{ field.name }}_professional"
+                                            {% if field.professional %}checked{% endif %}
+                                        >
+
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <input
+                                            class="form-check-input" type="checkbox"
+                                            name="{{ field.name }}_personal"
+                                            {% if field.personal %}checked{% endif %}
+                                        >
+
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <input
+                                            class="form-check-input" type="checkbox"
+                                            name="{{ field.name }}_general"
+                                            {% if field.general %}checked{% endif %}
+                                        >
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Profile Links Tab -->
+
+                <div
+                    class="tab-pane fade"
+                    id="links"
+                >
+
+                    {% if profile_links %}
+
+                        {% for link in profile_links %}
+
+                            <div class="card mb-3">
+
+                                <div class="card-body">
+
+                                    <h5>
+
+                                        {{ link.title }}
+
+                                    </h5>
+
+                                    {% if link.label %}
+
+                                        <p class="text-muted">
+
+                                            {{ link.label }}
+
+                                        </p>
+
+                                    {% endif %}
+
+                                    <p>
+
+                                        {{ link.url }}
+
+                                    </p>
+
+                                    <div class="row">
+
+                                        <div class="col-md-3">
+
+                                            <div class="form-check">
+
+                                                <input
+                                                    class="form-check-input" type="checkbox"
+                                                    name="link_{{ link.id }}_public"
+                                                    {% if link.public %}checked{% endif %}
+                                                >
+
+                                                <label class="form-check-label">
+
+                                                    Public
+
+                                                </label>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-3">
+
+                                            <div class="form-check">
+
+                                                <input
+                                                    class="form-check-input" type="checkbox"
+                                                    name="link_{{ link.id }}_professional"
+                                                    {% if link.professional %}checked{% endif %}
+                                                >
+
+                                                <label class="form-check-label">
+
+                                                    Professional
+
+                                                </label>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-3">
+
+                                            <div class="form-check">
+
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    name="link_{{ link.id }}_personal"
+                                                    {% if link.personal %}checked{% endif %}
+                                                >
+
+                                                <label class="form-check-label">
+
+                                                    Personal
+
+                                                </label>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-3">
+
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input" type="checkbox"
+                                                    name="link_{{ link.id }}_general"
+                                                    {% if link.general %}checked{% endif %}
+                                                >
+
+                                                <label class="form-check-label">
+                                                    General
+                                                </label>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% else %}  <!-- No Links added -->
+
+                        <div class="alert alert-secondary">
+                            You haven't added any links yet.
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <!-- Save Button -->
+
+            <div class="d-flex justify-content-end mt-4">
+                <button class="btn btn-primary" type="submit">
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+
     </div>
 
 </div>

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Links
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">
+    My Links
+</h1>
+
+<a
+    href="{% url 'links:add_link' %}"
+    class="btn btn-primary mb-4"
+>
+    Add Link
+</a>
+
+{% if links %}
+
+    {% for link in links %}
+
+        <div class="card mb-3">
+
+            <div class="card-body">
+
+                <h5 class="card-title">
+
+                    {% if link.platform == "other" and link.platform_name %}
+
+                        {{ link.platform_name }}
+
+                    {% else %}
+
+                        {{ link.get_platform_display }}
+
+                    {% endif %}
+
+                </h5>
+
+                {% if link.label %}
+
+                    <p class="mb-2">
+                        {{ link.label }}
+                    </p>
+
+                {% endif %}
+
+                <p>
+
+                    <a
+                        href="{{ link.url }}"
+                        target="_blank"
+                    >
+                        {{ link.url }}
+                    </a>
+
+                </p>
+
+                <a
+                    href="{% url 'links:edit_link' link.id %}"
+                    class="btn btn-outline-primary btn-sm"
+                >
+                    Edit
+                </a>
+
+                <a
+                    href="{% url 'links:delete_link' link.id %}"
+                    class="btn btn-outline-danger btn-sm"
+                >
+                    Delete
+                </a>
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="alert alert-secondary">
+
+        You haven't added any links yet.
+
+    </div>
+
+{% endif %}
+
+{% endblock %}

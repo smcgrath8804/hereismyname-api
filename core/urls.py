@@ -33,4 +33,9 @@ urlpatterns = [
     path("visibility/", include("visibility.urls")),
 
     path("api/", include("api.urls")),
+
+    path(
+        "links/",
+        include("links.urls"),
+    ),
 ]

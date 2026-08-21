@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import ProfileForm
+from links.services import get_visible_links
 from .models import Profile
 from .services import get_visible_fields
 
@@ -18,12 +19,18 @@ def profile_view(request, username):
         request.user
     )
 
+    visible_links = get_visible_links(
+        profile,
+        request.user
+    )
+
     return render(
         request,
         "profiles/profile.html",
         {
             "profile": profile,
-            "visible_fields": visible_fields
+            "visible_fields": visible_fields,
+            "visible_links": visible_links
         }
     )
 
@@ -37,6 +44,7 @@ def edit_profile(request):
 
         form = ProfileForm(
             request.POST,
+            request.FILES,
             instance=profile
         )
 

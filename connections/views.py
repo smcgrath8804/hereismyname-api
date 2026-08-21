@@ -67,27 +67,12 @@ def send_connection_request(request, user_id):
 
     return redirect("connections:search_users")
 
-@login_required
-def pending_requests(request):
-
-    requests = Connection.objects.filter(
-        owner=request.user,
-        relationship__isnull=True,
-    )
-
-    return render(
-        request,
-        "connections/pending_requests.html",
-        {
-            "requests": requests,
-        },
-    )
 
 @login_required
 def review_request(request, connection_id):
 
     if request.method != "POST":
-        return redirect("connections:pending_requests")
+        return redirect("connections:connections_list")
 
     connection = get_object_or_404(
         Connection,
@@ -106,7 +91,7 @@ def review_request(request, connection_id):
         "Connection updated successfully."
     )
 
-    return redirect("connections:pending_requests")
+    return redirect("connections:connections_list")
 
 @login_required
 def connections_list(request):
@@ -143,16 +128,27 @@ def connections_list(request):
 
         return redirect("connections:connections_list")
 
-    connections = Connection.objects.filter(
+    received_connections = Connection.objects.filter(
         owner=request.user,
         relationship__isnull=False,
+    ).order_by("requester__username")
+
+    sent_requests = Connection.objects.filter(
+        requester=request.user,
+    ).order_by("owner__username")
+
+    pending_requests = Connection.objects.filter(
+        owner=request.user,
+        relationship__isnull=True,
     ).order_by("requester__username")
 
     return render(
         request,
         "connections/connections_list.html",
         {
-            "connections": connections,
+            "sent_requests": sent_requests,
+            "pending_requests": pending_requests,
+            "received_connections": received_connections,
             "relationship_types": RELATIONSHIP_TYPES,
         },
     )

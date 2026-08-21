@@ -5,13 +5,34 @@ from visibility.models import VisibilityRule
 def build_profile_data(profile):
 
     return {
+        # ==== Identity ====
+        "profile_picture": profile.profile_picture,
         "display_name": profile.display_name,
         "local_language_name": profile.local_language_name,
+        "date_of_birth": profile.date_of_birth,
+        "nationality": profile.nationality,
+        "languages_spoken": profile.languages_spoken,
+
+        # ==== Location ====
+        "country": profile.country,
+        "city": profile.city,
+
+        # ==== Contact ====
         "email": profile.email,
         "phone": profile.phone,
+        "website": profile.website,
+
+        # ==== Professional ====
         "job_title": profile.job_title,
         "company": profile.company,
+        "industry": profile.industry,
+        "skills": profile.skills,
+        "years_experience": profile.years_experience,
+
+        # ==== About ====
         "bio": profile.bio,
+        "interests": profile.interests,
+        "hobbies": profile.hobbies,
     }
 
 def get_relationship(viewer, owner):
@@ -28,6 +49,9 @@ def get_relationship(viewer, owner):
                 requester = viewer,
             )
 
+            if connection.relationship is None:
+                return "public"
+
             return connection.relationship
 
         except Connection.DoesNotExist:
@@ -43,6 +67,7 @@ def get_visible_fields(profile, viewer):
         profile.user
     )
 
+    # print("Relationship:", relationship)
     if relationship == "owner":
         return build_profile_data(profile)
 
@@ -50,9 +75,10 @@ def get_visible_fields(profile, viewer):
 
     rules = VisibilityRule.objects.filter(
         owner = profile.user,
-        visible_to = relationship
+        visible_to__in=["public", relationship]  ## Show public to all connections, plus corresponding connection type
     )
 
+    # print("Rules:", list(rules.values_list("field_name", flat=True)))
     for rule in rules:
 
         visible_fields[rule.field_name] = getattr(

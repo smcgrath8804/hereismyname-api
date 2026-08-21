@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+Delete Link
+{% endblock %}
+
+{% block content %}
+
+<h2>
+    Delete Link
+</h2>
+
+<p>
+
+Are you sure you want to delete
+
+<strong>
+
+{% if link.label %}
+{{ link.label }}
+{% else %}
+{{ link.get_platform_display }}
+{% endif %}
+
+</strong>?
+
+</p>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <button
+        class="btn btn-danger"
+        type="submit"
+    >
+        Delete
+    </button>
+
+    <a
+        href="{% url 'links:links_list' %}"
+        class="btn btn-secondary"
+    >
+        Cancel
+    </a>
+
+</form>
+
+{% endblock %}

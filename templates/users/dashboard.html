@@ -4,49 +4,134 @@
 
 {% block content %}
 
-<h1>Dashboard</h1>
+<h1 class="mb-4">Dashboard</h1>
 
 {% if profile.display_name %}
-    <h3>Welcome, {{ profile.display_name }}!</h3>
+    <h4>Welcome, {{ profile.display_name }}!</h4>
 {% else %}
-    <h3>Welcome, {{ user.email }}!</h3>
+    <h4>Welcome, {{ user.email }}!</h4>
 {% endif %}
 
-<p>
+<p class="text-muted mb-4">
     Manage your digital identity and control how it is presented to different audiences.
 </p>
 
-<hr>
+<div class="row g-4">
 
-<h4>Your Profile</h4>
+    <!-- Profile -->
 
-<p>
-    <strong>Display Name:</strong>
-    {{ profile.display_name|default:"Not set" }}
-</p>
+    <div class="col-md-6">
 
-<p>
-    <strong>Company:</strong>
-    {{ profile.company|default:"Not set" }}
-</p>
+        <div class="card h-100">
 
-<p>
-    <strong>Job Title:</strong>
-    {{ profile.job_title|default:"Not set" }}
-</p>
+            <div class="card-body">
 
-<hr>
+                <h4 class="card-title">
+                    Profile
+                </h4>
 
-<a
-    href="{% url 'profiles:edit_profile' %}"
-    class="btn btn-primary">
-    Edit Profile
-</a>
+                <p class="card-text">
+                    Update your profile information and preview how your identity appears to others.
+                </p>
 
-<a
-    href="{% url 'profiles:profile' profile.user.username %}"
-    class="btn btn-secondary">
-    View My Profile
-</a>
+                <a href="{% url 'profiles:edit_profile' %}" class="btn btn-primary me-2">
+                    Edit Profile
+                </a>
+
+                <a href="{% url 'profiles:profile' profile.user.username %}" class="btn btn-outline-secondary">
+                    View Profile
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Connections -->
+
+    <div class="col-md-6">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <h4 class="card-title">
+                    Connections
+                </h4>
+
+                <p class="card-text">
+                    Search for users, manage your relationships and review incoming requests.
+                </p>
+
+                <a href="{% url 'connections:search_users' %}" class="btn btn-primary me-2">
+                    Search Users
+                </a>
+
+                <a href="{% url 'connections:connections_list' %}" class="btn btn-outline-secondary">
+                    My Connections
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Links -->
+
+    <div class="col-md-6">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <h4 class="card-title">
+                    My Links
+                </h4>
+
+                <p class="card-text">
+                    Manage the websites and online identities that form part of your digital profile.
+                </p>
+
+                <a href="{% url 'links:links_list' %}" class="btn btn-primary">
+                    Manage Links
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Privacy -->
+
+    <div class="col-md-6">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <h4 class="card-title">
+                    Privacy
+                </h4>
+
+                <p class="card-text">
+                    Decide which profile fields and links are visible to each type of relationship.
+                </p>
+
+                <a href="{% url 'visibility_rules' %}" class="btn btn-primary">
+                    Visibility Rules
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}
