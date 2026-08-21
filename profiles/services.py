@@ -5,7 +5,6 @@ from visibility.models import VisibilityRule
 def build_profile_data(profile):
 
     return {
-
         # ==== Identity ====
         "profile_picture": profile.profile_picture,
         "display_name": profile.display_name,
@@ -46,8 +45,8 @@ def get_relationship(viewer, owner):
         try:
 
             connection = Connection.objects.get(
-                owner=owner,
-                requester=viewer,
+                owner = owner,
+                requester = viewer,
             )
 
             if connection.relationship is None:
@@ -75,12 +74,11 @@ def get_visible_fields(profile, viewer):
     visible_fields = {}
 
     rules = VisibilityRule.objects.filter(
-        owner=profile.user,
-        visible_to=relationship
+        owner = profile.user,
+        visible_to__in = ["public", relationship]  ## Show public to all connections, plus corresponding connection type
     )
 
     # print("Rules:", list(rules.values_list("field_name", flat=True)))
-
     for rule in rules:
 
         visible_fields[rule.field_name] = getattr(
