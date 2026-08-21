@@ -194,6 +194,46 @@
 
     {% endif %}
 
+    <!-- ============================= -->
+    <!-- Links -->
+    <!-- =============================  -->
+    {% if visible_links %}
+        <div class="card mt-4">
+
+            <div class="card-header">
+                <h4 class="mb-0">Links</h4>
+            </div>
+
+            <div class="card-body">
+
+                {% for link in visible_links %}
+                    <div class="mb-3">
+                        <h5 class="mb-1">
+                            {% if link.platform == "other" and link.platform_name %}
+                                {{ link.platform_name }}
+
+                            {% else %}
+                                {{ link.get_platform_display }}
+                            {% endif %}
+                        </h5>
+
+                        {% if link.label %}
+                            <p class="text-muted mb-1">
+                                {{ link.label }}
+                            </p>
+                        {% endif %}
+
+                        <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">
+                            {{ link.url }}
+                        </a>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    {% endif %}
+
 </div>
 
 {% endblock %}

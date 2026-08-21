@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import ProfileForm
+from links.services import get_visible_links
 from .models import Profile
 from .services import get_visible_fields
 
