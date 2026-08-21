@@ -27,9 +27,9 @@ def get_visible_links(profile, viewer):
     ## other viewers only see links matching relationship type
     visible_link_ids = LinkVisibilityRule.objects.filter(
         owner = profile.user,
-        visible_to = relationship,
+        visible_to__in=["public", relationship],
     ).values_list("link_id", flat=True,)
 
     return profile.links.filter(
-        id__in=visible_link_ids,
+        id__in = visible_link_ids,
     )

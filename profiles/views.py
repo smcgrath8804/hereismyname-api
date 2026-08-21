@@ -19,12 +19,18 @@ def profile_view(request, username):
         request.user
     )
 
+    visible_links = get_visible_links(
+        profile,
+        request.user
+    )
+
     return render(
         request,
         "profiles/profile.html",
         {
             "profile": profile,
-            "visible_fields": visible_fields
+            "visible_fields": visible_fields,
+            "visible_links": visible_links
         }
     )
 
