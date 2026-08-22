@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import (LoginAPIView, MyProfileAPIView, ProfileAPIView,
                     ConnectionsAPIView, ConnectionDetailAPIView, PendingConnectionsAPIView,
-                    ConnectionRequestAPIView, ReviewConnectionAPIView)
+                    ConnectionRequestAPIView, ReviewConnectionAPIView, VisibilityRulesAPIView,)
 
 urlpatterns = [
 
@@ -52,6 +52,12 @@ urlpatterns = [
         "review/<int:connection_id>/",
         ReviewConnectionAPIView.as_view(),
         name="api-review-connection",
+    ),
+
+    path(
+        "visibility/",
+        VisibilityRulesAPIView.as_view(),
+        name="api-visibility",
     ),
 
 ]

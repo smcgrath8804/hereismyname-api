@@ -109,3 +109,16 @@ class ReviewConnectionSerializer(serializers.Serializer):
             "general",
         ]
     )
+
+# Profile field visibility rule
+class VisibilityRuleSerializer(serializers.Serializer):
+    field_name = serializers.CharField()
+
+    visible_to = serializers.ChoiceField(
+        choices=[
+            "public",
+            "personal",
+            "professional",
+            "general",
+        ]
+    )

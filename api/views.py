@@ -8,6 +8,7 @@ from rest_framework.permissions import (IsAuthenticated, AllowAny)
 from profiles.models import Profile
 from profiles.services import (get_visible_fields, build_profile_data,)
 
+
 from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,
                           UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer,
                           ReviewConnectionSerializer,)
@@ -18,6 +19,15 @@ from rest_framework import status
 from connections.models import Connection
 from connections.services import (build_connection_data, build_pending_connection_data, create_connection_request,
                                   review_connection_request,)
+from visibility.models import VisibilityRule
+
+from .serializers import (
+    LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,
+    UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer, ReviewConnectionSerializer,
+    VisibilityRuleSerializer,
+)
+
+from drf_spectacular.utils import extend_schema
 
 User = get_user_model()
 
@@ -25,6 +35,10 @@ class LoginAPIView(APIView):
 
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        request=LoginSerializer,
+        responses={200: None},
+    )
     def post(self, request):
 
         serializer = LoginSerializer(data=request.data)
@@ -289,3 +303,19 @@ class ReviewConnectionAPIView(APIView):
                 build_connection_data(connection)
             ).data
         )
+
+# Return visibility rules belonging to the authenticated user
+class VisibilityRulesAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        rules = VisibilityRule.objects.filter(
+            owner=request.user
+        )
+
+        serializer = VisibilityRuleSerializer(
+            rules,
+            many=True,
+        )
+        return Response(serializer.data)
