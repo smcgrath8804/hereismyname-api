@@ -2,7 +2,9 @@ from django.urls import path
 
 from .views import (LoginAPIView, MyProfileAPIView, ProfileAPIView,
                     ConnectionsAPIView, ConnectionDetailAPIView, PendingConnectionsAPIView,
-                    ConnectionRequestAPIView, ReviewConnectionAPIView, VisibilityRulesAPIView,)
+                    ConnectionRequestAPIView, ReviewConnectionAPIView, VisibilityRulesAPIView,
+                    ProfileLinksAPIView, ProfileLinkDetailAPIView,
+                    )
 
 urlpatterns = [
 
@@ -58,6 +60,18 @@ urlpatterns = [
         "visibility/",
         VisibilityRulesAPIView.as_view(),
         name="api-visibility",
+    ),
+
+    path(
+        "links/",
+        ProfileLinksAPIView.as_view(),
+        name="api-links",
+    ),
+
+    path(
+        "links/<int:link_id>/",
+        ProfileLinkDetailAPIView.as_view(),
+        name="api-link-detail",
     ),
 
 ]

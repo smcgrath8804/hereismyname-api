@@ -11,7 +11,7 @@ from profiles.services import (get_visible_fields, build_profile_data,)
 
 from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,
     UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer, ReviewConnectionSerializer,
-    VisibilityRulesSerializer,
+    VisibilityRulesSerializer, CreateProfileLinkSerializer, ProfileLinkSerializer, UpdateProfileLinkSerializer,
 )
 
 from django.contrib.auth import (authenticate, get_user_model)
@@ -23,6 +23,7 @@ from connections.services import (build_connection_data, build_pending_connectio
 from visibility.models import VisibilityRule, LinkVisibilityRule
 from visibility.constants import PROFILE_FIELDS
 from links.models import ProfileLink
+from links.services import build_link_data
 
 
 from drf_spectacular.utils import extend_schema
@@ -416,3 +417,125 @@ class VisibilityRulesAPIView(APIView):
                     )
 
         return self.get(request)
+
+## List and create profile links for authenticated user
+class ProfileLinksAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        ### Return all links owned by logged in user
+        links = ProfileLink.objects.filter(
+            profile=request.user.profile,
+        )
+
+        data = [
+            build_link_data(link)
+            for link in links
+        ]
+
+        serializer = ProfileLinkSerializer(
+            data,
+            many=True,
+        )
+
+        return Response(serializer.data)
+
+    @extend_schema(
+        request=CreateProfileLinkSerializer,
+        responses={201: ProfileLinkSerializer},
+    )
+    def post(self, request):
+        ## Create a new profile link for the logged in user
+        serializer = CreateProfileLinkSerializer(
+            data=request.data,
+        )
+
+        serializer.is_valid(
+            raise_exception=True,
+        )
+
+        link = ProfileLink(
+            profile=request.user.profile,
+        )
+
+        for field, value in serializer.validated_data.items():
+
+            setattr(
+                link,
+                field,
+                value,
+            )
+
+        ## place new links at the end.
+        if "display_order" not in serializer.validated_data:
+
+            link.display_order = ProfileLink.objects.filter(
+                profile=request.user.profile,
+            ).count()
+
+        link.save()
+
+        return Response(
+            ProfileLinkSerializer(
+                build_link_data(link)
+            ).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+## Update or delete one profile link owned by authenticated user.
+class ProfileLinkDetailAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        request=UpdateProfileLinkSerializer,
+        responses={200: ProfileLinkSerializer},
+    )
+    def patch(self, request, link_id):
+        ## only allow users to edit own links
+        link = get_object_or_404(
+            ProfileLink,
+            id=link_id,
+            profile=request.user.profile,
+        )
+
+        serializer = UpdateProfileLinkSerializer(
+            data=request.data,
+            partial=True,
+        )
+
+        serializer.is_valid(
+            raise_exception=True,
+        )
+
+        for field, value in serializer.validated_data.items():
+
+            setattr(
+                link,
+                field,
+                value,
+            )
+
+        link.save()
+
+        return Response(
+            ProfileLinkSerializer(
+                build_link_data(link)
+            ).data
+        )
+
+    def delete(self, request, link_id):
+        ### only allow users to delete their own links.
+        link = get_object_or_404(
+            ProfileLink,
+            id=link_id,
+            profile=request.user.profile,
+        )
+
+        link.delete()
+
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
+        )

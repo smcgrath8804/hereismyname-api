@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from visibility.constants import PROFILE_FIELDS
+from links.constants import PLATFORM_CHOICES
 
 ## View the profile
 class ProfileSerializer(serializers.Serializer):
@@ -72,7 +73,7 @@ class UpdateProfileSerializer(serializers.Serializer):
     interests = serializers.CharField(required=False)
     hobbies = serializers.CharField(required=False)
 
-# conection owned by the authenticated user.
+# #conection owned by the authenticated user.
 class ConnectionSerializer(serializers.Serializer):
 
     id = serializers.IntegerField()
@@ -80,14 +81,14 @@ class ConnectionSerializer(serializers.Serializer):
     display_name = serializers.CharField()
     relationship = serializers.CharField()
 
-# Allow owner to change the relationship type
+## allow owner to change the relationship type
 class UpdateConnectionSerializer(serializers.Serializer):
 
     relationship = serializers.ChoiceField(
         choices = ["public", "personal", "professional", "general",]
     )
 
-# connection requests awaiting review
+## connection requests awaiting review
 class PendingConnectionSerializer(serializers.Serializer):
 
 
@@ -95,7 +96,7 @@ class PendingConnectionSerializer(serializers.Serializer):
     username = serializers.CharField()
     display_name = serializers.CharField()
 
-# Send a connection request to another user
+## Send connection request to another user
 class ConnectionRequestSerializer(serializers.Serializer):
 
     username = serializers.CharField()
@@ -141,7 +142,7 @@ class VisibilityFieldRuleSerializer(serializers.Serializer):
     )
 
 
-#' Profile link visibility rule used by the API.
+#' Profile link visibility rule used by API
 class VisibilityLinkRuleSerializer(serializers.Serializer):
 
     link_id = serializers.IntegerField()
@@ -167,3 +168,103 @@ class VisibilityRulesSerializer(serializers.Serializer):
         many=True,
         required=False,
     )
+
+### Profile link shown through the API.
+class ProfileLinkSerializer(serializers.Serializer):
+
+    id = serializers.IntegerField(read_only=True)
+    platform = serializers.CharField()
+    platform_name = serializers.CharField()
+    label = serializers.CharField()
+    url = serializers.URLField()
+    display_order = serializers.IntegerField()
+
+
+# Create a profile link through the API - taken from ProfileLinkForm.
+class CreateProfileLinkSerializer(serializers.Serializer):
+
+    platform = serializers.ChoiceField(
+        choices=PLATFORM_CHOICES,
+    )
+
+    platform_name = serializers.CharField(
+        required=False,
+        allow_blank=True,
+    )
+
+    label = serializers.CharField(
+        required=False,
+        allow_blank=True,
+    )
+
+    url = serializers.URLField()
+
+    display_order = serializers.IntegerField(
+        required=False,
+    )
+
+    def validate(self, data):
+
+        platform = data.get("platform")
+        platform_name = data.get("platform_name")
+
+        ## When other selected, input customer value
+        if platform == "other" and not platform_name:
+
+            raise serializers.ValidationError({
+                "platform_name": "Please enter a platform name.",
+            })
+
+        ## clearing platform_name for normal platforms.
+        elif platform != "other":
+
+            data["platform_name"] = ""
+
+        return data
+
+
+## Update a profile link through the API.
+## partial updates, all fields optional
+class UpdateProfileLinkSerializer(serializers.Serializer):
+
+    platform = serializers.ChoiceField(
+        choices=PLATFORM_CHOICES,
+        required=False,
+    )
+
+    platform_name = serializers.CharField(
+        required=False,
+        allow_blank=True,
+    )
+
+    label = serializers.CharField(
+        required=False,
+        allow_blank=True,
+    )
+
+    url = serializers.URLField(
+        required=False,
+    )
+
+    display_order = serializers.IntegerField(
+        required=False,
+    )
+
+    def validate(self, data):
+
+        platform = data.get("platform")
+        platform_name = data.get("platform_name")
+
+        ## When other selected, input customer value
+        if platform == "other" and not platform_name:
+
+            raise serializers.ValidationError({
+                "platform_name": "Please enter a platform name.",
+            })
+
+        ## clear platform_name for normal platforms
+        elif platform and platform != "other":
+
+            data["platform_name"] = ""
+
+        return data
