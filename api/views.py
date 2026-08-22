@@ -10,8 +10,9 @@ from profiles.services import (get_visible_fields, build_profile_data,)
 
 
 from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,
-                          UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer,
-                          ReviewConnectionSerializer,)
+    UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer, ReviewConnectionSerializer,
+    VisibilityRulesSerializer,
+)
 
 from django.contrib.auth import (authenticate, get_user_model)
 from rest_framework import status
@@ -19,13 +20,10 @@ from rest_framework import status
 from connections.models import Connection
 from connections.services import (build_connection_data, build_pending_connection_data, create_connection_request,
                                   review_connection_request,)
-from visibility.models import VisibilityRule
+from visibility.models import VisibilityRule, LinkVisibilityRule
+from visibility.constants import PROFILE_FIELDS
+from links.models import ProfileLink
 
-from .serializers import (
-    LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,
-    UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer, ReviewConnectionSerializer,
-    VisibilityRuleSerializer,
-)
 
 from drf_spectacular.utils import extend_schema
 
@@ -304,18 +302,117 @@ class ReviewConnectionAPIView(APIView):
             ).data
         )
 
-# Return visibility rules belonging to the authenticated user
+## Manage visibility rules belonging to the authenticated user.
 class VisibilityRulesAPIView(APIView):
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        ## Return both profile field and profile link visibilitys
 
-        rules = VisibilityRule.objects.filter(
-            owner=request.user
+        field_rules = VisibilityRule.objects.filter(
+            owner=request.user,
         )
 
-        serializer = VisibilityRuleSerializer(
-            rules,
-            many=True,
+        link_rules = LinkVisibilityRule.objects.filter(
+            owner=request.user,
         )
+
+        field_visibility = []
+
+        for field_name, _ in PROFILE_FIELDS:
+
+            visible_to = [
+                rule.visible_to
+                for rule in field_rules
+                if rule.field_name == field_name
+            ]
+
+            field_visibility.append({
+                "field_name": field_name,
+                "visible_to": visible_to,
+            })
+
+        link_visibility = []
+
+        for link in ProfileLink.objects.filter(
+            profile=request.user.profile,
+        ):
+
+            visible_to = [
+                rule.visible_to
+                for rule in link_rules
+                if rule.link_id == link.id
+            ]
+
+            link_visibility.append({
+                "link_id": link.id,
+                "visible_to": visible_to,
+            })
+
+        serializer = VisibilityRulesSerializer({
+            "profile_fields": field_visibility,
+            "profile_links": link_visibility,
+        })
+
         return Response(serializer.data)
+
+    def patch(self, request):
+        # Update profile field and/or profile link visibility rules.
+
+        serializer = VisibilityRulesSerializer(
+            data=request.data,
+            partial=True,
+        )
+
+        serializer.is_valid(
+            raise_exception=True,
+        )
+
+        data = serializer.validated_data
+
+        if "profile_fields" in data:
+
+            VisibilityRule.objects.filter(
+                owner=request.user,
+            ).delete()
+
+            for field in data["profile_fields"]:
+
+                field_name = field["field_name"]
+
+                for relationship in set(
+                    field.get("visible_to", [])
+                ):
+
+                    VisibilityRule.objects.create(
+                        owner=request.user,
+                        field_name=field_name,
+                        visible_to=relationship,
+                    )
+
+        if "profile_links" in data:
+
+            LinkVisibilityRule.objects.filter(
+                owner=request.user,
+            ).delete()
+
+            for link_data in data["profile_links"]:
+
+                link = get_object_or_404(
+                    ProfileLink,
+                    id=link_data["link_id"],
+                    profile=request.user.profile,
+                )
+
+                for relationship in set(
+                    link_data.get("visible_to", [])
+                ):
+
+                    LinkVisibilityRule.objects.create(
+                        owner=request.user,
+                        link=link,
+                        visible_to=relationship,
+                    )
+
+        return self.get(request)

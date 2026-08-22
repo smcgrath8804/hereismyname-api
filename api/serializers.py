@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from visibility.constants import PROFILE_FIELDS
 
 ## View the profile
 class ProfileSerializer(serializers.Serializer):
@@ -32,10 +33,12 @@ class ProfileSerializer(serializers.Serializer):
     interests = serializers.CharField(required=False)
     hobbies = serializers.CharField(required=False)
 
+
 class LoginSerializer(serializers.Serializer):
 
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True) ## Password will never be displayed in API
+
 
  ## Add the ability to update individual fields in the profile
 class UpdateProfileSerializer(serializers.Serializer):
@@ -110,15 +113,57 @@ class ReviewConnectionSerializer(serializers.Serializer):
         ]
     )
 
-# Profile field visibility rule
-class VisibilityRuleSerializer(serializers.Serializer):
-    field_name = serializers.CharField()
 
-    visible_to = serializers.ChoiceField(
+## ***TO CHECK*** - Need to convert this for the API to access visibility
+RELATIONSHIP_CHOICES = [
+    "public",
+    "personal",
+    "professional",
+    "general",
+]
+
+## Profile field visibility rule used by the API.
+class VisibilityFieldRuleSerializer(serializers.Serializer):
+
+    field_name = serializers.ChoiceField(
         choices=[
-            "public",
-            "personal",
-            "professional",
-            "general",
+            field_name
+            for field_name, _ in PROFILE_FIELDS
         ]
+    )
+
+    visible_to = serializers.ListField(
+        child=serializers.ChoiceField(
+            choices=RELATIONSHIP_CHOICES,
+        ),
+        required=False,
+        allow_empty=True,
+    )
+
+
+#' Profile link visibility rule used by the API.
+class VisibilityLinkRuleSerializer(serializers.Serializer):
+
+    link_id = serializers.IntegerField()
+
+    visible_to = serializers.ListField(
+        child=serializers.ChoiceField(
+            choices=RELATIONSHIP_CHOICES,
+        ),
+        required=False,
+        allow_empty=True,
+    )
+
+
+## Combined visibility
+class VisibilityRulesSerializer(serializers.Serializer):
+
+    profile_fields = VisibilityFieldRuleSerializer(
+        many=True,
+        required=False,
+    )
+
+    profile_links = VisibilityLinkRuleSerializer(
+        many=True,
+        required=False,
     )
