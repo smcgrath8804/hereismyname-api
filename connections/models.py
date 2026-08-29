@@ -39,5 +39,5 @@ class Connection(models.Model):
 
     def __str__(self):
         if self.relationship:
-            return f"{self.requester} → {self.owner} ({self.relationship})"
-        return f"{self.requester} → {self.owner} (Pending)"
+            return f"{self.requester} to {self.owner} ({self.relationship})"
+        return f"{self.requester} to {self.owner} (Pending)"
