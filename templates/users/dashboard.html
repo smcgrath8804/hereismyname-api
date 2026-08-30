@@ -12,6 +12,29 @@
     <h4>Welcome, {{ user.email }}!</h4>
 {% endif %}
 
+{% if not profile.display_name or not profile.profile_picture %}
+
+    <div class="alert alert-warning mt-3" role="alert">
+
+        <strong>Profile incomplete.</strong>
+
+        {% if not profile.display_name and not profile.profile_picture %}
+            Add a display name and profile picture so your profile is easier for others to recognise.
+        {% elif not profile.display_name %}
+            Add a display name so your profile is easier for others to recognise.
+        {% elif not profile.profile_picture %}
+            Add a profile picture so your profile is easier for others to recognise.
+        {% endif %}
+
+        <div class="mt-2">
+            <a href="{% url 'profiles:edit_profile' %}" class="btn btn-warning btn-sm">
+                Complete Profile
+            </a>
+        </div>
+    </div>
+
+{% endif %}
+
 <p class="text-muted mb-4">
     Manage your digital identity and control how it is presented to different audiences.
 </p>
