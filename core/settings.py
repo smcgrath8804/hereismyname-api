@@ -139,6 +139,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+# Uploaded user files lik profile pictures
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 ## *Added code*
 AUTH_USER_MODEL = 'users.User'
 
