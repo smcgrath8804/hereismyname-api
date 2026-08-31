@@ -21,6 +21,10 @@ def search_users(request):
             username__icontains=query
         ).exclude(
             id=request.user.id
+        ).exclude(
+            is_superuser=True
+        ).exclude(
+            username="admin"
         )
 
         existing_requests = Connection.objects.filter(
