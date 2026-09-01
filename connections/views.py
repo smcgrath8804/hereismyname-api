@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.utils import timezone
+
 
 from .models import Connection
 from .services import (create_connection_request, review_connection_request,)
@@ -10,7 +10,7 @@ from .constants import RELATIONSHIP_TYPES
 
 User = get_user_model()
 
-
+## Search for other users and show existing sent requests
 @login_required
 def search_users(request):
     query = request.GET.get("q", "")
@@ -44,6 +44,7 @@ def search_users(request):
 
     return render(request, "connections/search_users.html", context)
 
+## Create a new pending connection request
 @login_required
 def send_connection_request(request, user_id):
 
@@ -67,11 +68,11 @@ def send_connection_request(request, user_id):
         messages.success(request, "Connection request sent.")
 
     else:
-        messages.info(request,"Connection request already exists.")
+        messages.info(request, "Connection request already exists.")
 
     return redirect("connections:search_users")
 
-
+## Accept a pending connection request
 @login_required
 def review_request(request, connection_id):
 
@@ -85,18 +86,28 @@ def review_request(request, connection_id):
         relationship__isnull=True,
     )
 
-    connection.relationship = request.POST.get("relationship")
-    connection.reviewed_at = timezone.now()
+    relationship = request.POST.get("relationship")
 
-    connection.save()
+    try:
+        review_connection_request(
+            connection,
+            relationship,
+        )
 
-    messages.success(
-        request,
-        "Connection updated successfully."
-    )
+        messages.success(
+            request,
+            "Connection updated successfully."
+        )
+
+    except ValueError as error:
+        messages.error(
+            request,
+            str(error),
+        )
 
     return redirect("connections:connections_list")
 
+## Show sent, pending and accepted connections
 @login_required
 def connections_list(request):
 

@@ -3,8 +3,7 @@ from django.utils import timezone
 from .constants import RELATIONSHIP_TYPES
 
 def build_connection_data(connection):
-    """ Build a consistent API representation of a connection for re-use """
-
+    ## Build a consistent API representation of a connection for re-use
     return {
         "id": connection.id,
         "username": connection.requester.username,
@@ -13,8 +12,7 @@ def build_connection_data(connection):
     }
 
 def build_pending_connection_data(connection):
-    """ Build a consistent API representation of a pending connection request. """
-
+    ## Build a consistent API representation of a pending connection request
     return {
         "id": connection.id,
         "username": connection.requester.username,
@@ -22,8 +20,7 @@ def build_pending_connection_data(connection):
     }
 
 def create_connection_request(owner, requester):
-    """ Create a connection request if one does not already exist. """
-
+    ## Create a connection request if one does not already exist
     if owner == requester:
         raise ValueError(
             "You can't send a connection request to yourself."
@@ -37,8 +34,7 @@ def create_connection_request(owner, requester):
 
 
 def review_connection_request(connection, relationship):
-    """ Review a pending connection request. """
-
+    ## Review a pending connection request
     valid_relationships = {
         choice[0]
         for choice in RELATIONSHIP_TYPES
@@ -51,7 +47,6 @@ def review_connection_request(connection, relationship):
 
     connection.relationship = relationship
     connection.reviewed_at = timezone.now()
-
     connection.save()
 
     return connection
