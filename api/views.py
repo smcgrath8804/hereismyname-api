@@ -108,7 +108,6 @@ class MyProfileAPIView(APIView):
         request=UpdateProfileSerializer,
         responses={200: ProfileSerializer},
     )
-
     def patch(self, request):
 
         profile = request.user.profile
@@ -165,7 +164,6 @@ class ConnectionDetailAPIView(APIView):
         request=UpdateConnectionSerializer,
         responses={200: ConnectionSerializer},
     )
-
     def patch(self, request, connection_id):
 
         connection = get_object_or_404(
@@ -221,6 +219,10 @@ class ConnectionRequestAPIView(APIView):
     ## Allow the authenticated user to send a connection request
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=ConnectionRequestSerializer,
+        responses={201: None},
+    )
     def post(self, request):
 
         serializer = ConnectionRequestSerializer(
@@ -273,6 +275,10 @@ class ReviewConnectionAPIView(APIView):
     ## Review a pending connection request
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=ReviewConnectionSerializer,
+        responses={200: ConnectionSerializer},
+    )
     def post(self, request, connection_id):
 
         connection = get_object_or_404(
@@ -366,6 +372,10 @@ class VisibilityRulesAPIView(APIView):
 
         return Response(serializer.data)
 
+    @extend_schema(
+        request=VisibilityRulesSerializer,
+        responses={200: VisibilityRulesSerializer},
+    )
     def patch(self, request):
         ## Update profile field and/or profile link visibility rules
         serializer = VisibilityRulesSerializer(
