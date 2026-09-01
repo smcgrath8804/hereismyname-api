@@ -8,12 +8,14 @@ from .views import (LoginAPIView, MyProfileAPIView, ProfileAPIView,
 
 urlpatterns = [
 
+    ## ==== Authentication ====
     path(
         "login/",
         LoginAPIView.as_view(),
         name="api-login",
     ),
-    
+
+    ## ==== Profiles ====
     path(
         "profile/me/",
         MyProfileAPIView.as_view(),
@@ -26,6 +28,7 @@ urlpatterns = [
         name="api-profile",
     ),
 
+    ## ==== Connections ====
     path(
         "connections/",
         ConnectionsAPIView.as_view(),
@@ -56,12 +59,14 @@ urlpatterns = [
         name="api-review-connection",
     ),
 
+    ## ==== Visibility ====
     path(
         "visibility/",
         VisibilityRulesAPIView.as_view(),
         name="api-visibility",
     ),
 
+    ## ==== Profile links ====
     path(
         "links/",
         ProfileLinksAPIView.as_view(),

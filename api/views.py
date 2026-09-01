@@ -8,7 +8,6 @@ from rest_framework.permissions import (IsAuthenticated, AllowAny)
 from profiles.models import Profile
 from profiles.services import (get_visible_fields, build_profile_data,)
 
-
 from .serializers import (LoginSerializer, ProfileSerializer, UpdateProfileSerializer, ConnectionSerializer,
     UpdateConnectionSerializer, PendingConnectionSerializer, ConnectionRequestSerializer, ReviewConnectionSerializer,
     VisibilityRulesSerializer, CreateProfileLinkSerializer, ProfileLinkSerializer, UpdateProfileLinkSerializer,
@@ -20,18 +19,19 @@ from rest_framework import status
 from connections.models import Connection
 from connections.services import (build_connection_data, build_pending_connection_data, create_connection_request,
                                   review_connection_request,)
+
 from visibility.models import VisibilityRule, LinkVisibilityRule
 from visibility.constants import PROFILE_FIELDS
+
 from links.models import ProfileLink
 from links.services import build_link_data
-
 
 from drf_spectacular.utils import extend_schema
 
 User = get_user_model()
 
 class LoginAPIView(APIView):
-
+    ## Login through the API and return an authentication token
     permission_classes = [AllowAny]
 
     @extend_schema(
@@ -70,7 +70,7 @@ class LoginAPIView(APIView):
 
 
 class ProfileAPIView(APIView):
-
+    ## Return the visible profile fields for a selected user
     def get(self, request, username):
 
         profile = get_object_or_404(
@@ -91,7 +91,7 @@ class ProfileAPIView(APIView):
 
 
 class MyProfileAPIView(APIView):
-
+    ## View or update the authenticated user's own profile
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -127,9 +127,9 @@ class MyProfileAPIView(APIView):
             ProfileSerializer(build_profile_data(profile)).data
         )
 
-# Return all connections for the logged-in user.
-class ConnectionsAPIView(APIView):
 
+class ConnectionsAPIView(APIView):
+    ## Return all connections for the logged-in user
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -151,9 +151,9 @@ class ConnectionsAPIView(APIView):
 
         return Response(serializer.data)
 
-# Allow the owner to update one of their connections
-class ConnectionDetailAPIView(APIView):
 
+class ConnectionDetailAPIView(APIView):
+    ## Allow the owner to update one of their connections
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, connection_id):
@@ -182,9 +182,9 @@ class ConnectionDetailAPIView(APIView):
             ).data
         )
 
-# Return pending connection requests for authenticated user
-class PendingConnectionsAPIView(APIView):
 
+class PendingConnectionsAPIView(APIView):
+    ## Return pending connection requests for authenticated user
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -206,9 +206,9 @@ class PendingConnectionsAPIView(APIView):
 
         return Response(serializer.data)
 
-# Allow the authenticated user to send a connection request
-class ConnectionRequestAPIView(APIView):
 
+class ConnectionRequestAPIView(APIView):
+    ## Allow the authenticated user to send a connection request
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -259,9 +259,8 @@ class ConnectionRequestAPIView(APIView):
         )
 
 
-# Review a pending connection request
 class ReviewConnectionAPIView(APIView):
-
+    ## Review a pending connection request
     permission_classes = [IsAuthenticated]
 
     def post(self, request, connection_id):
@@ -303,14 +302,13 @@ class ReviewConnectionAPIView(APIView):
             ).data
         )
 
-## Manage visibility rules belonging to the authenticated user.
-class VisibilityRulesAPIView(APIView):
 
+class VisibilityRulesAPIView(APIView):
+    ## Manage visibility rules belonging to the authenticated user
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         ## Return both profile field and profile link visibilitys
-
         field_rules = VisibilityRule.objects.filter(
             owner=request.user,
         )
@@ -359,8 +357,7 @@ class VisibilityRulesAPIView(APIView):
         return Response(serializer.data)
 
     def patch(self, request):
-        # Update profile field and/or profile link visibility rules.
-
+        ## Update profile field and/or profile link visibility rules
         serializer = VisibilityRulesSerializer(
             data=request.data,
             partial=True,
@@ -418,9 +415,9 @@ class VisibilityRulesAPIView(APIView):
 
         return self.get(request)
 
-## List and create profile links for authenticated user
-class ProfileLinksAPIView(APIView):
 
+class ProfileLinksAPIView(APIView):
+    ##List and create profile links for authenticated user
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -484,9 +481,8 @@ class ProfileLinksAPIView(APIView):
         )
 
 
-## Update or delete one profile link owned by authenticated user.
 class ProfileLinkDetailAPIView(APIView):
-
+    ## Update or delete one profile link owned by authenticated user
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
@@ -527,7 +523,7 @@ class ProfileLinkDetailAPIView(APIView):
         )
 
     def delete(self, request, link_id):
-        ### only allow users to delete their own links.
+        ### only allow users to delete their own links
         link = get_object_or_404(
             ProfileLink,
             id=link_id,

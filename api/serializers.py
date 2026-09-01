@@ -1,11 +1,15 @@
 from rest_framework import serializers
+
 from visibility.constants import PROFILE_FIELDS
+
 from links.constants import PLATFORM_CHOICES
+
+from connections.constants import RELATIONSHIP_TYPES
 
 ## View the profile
 class ProfileSerializer(serializers.Serializer):
 
-    # ==== Identity ====
+    ## ==== Identity ====
     profile_picture = serializers.ImageField(required=False)
     display_name = serializers.CharField(required=False)
     local_language_name = serializers.CharField(required=False)
@@ -13,23 +17,23 @@ class ProfileSerializer(serializers.Serializer):
     nationality = serializers.CharField(required=False)
     languages_spoken = serializers.CharField(required=False)
 
-    # ==== Location ====
+    ## ==== Location ====
     country = serializers.CharField(required=False)
     city = serializers.CharField(required=False)
 
-    # ==== Contact ====
+    ## ==== Contact ====
     email = serializers.EmailField(required=False)
     phone = serializers.CharField(required=False)
     website = serializers.URLField(required=False)
 
-    # ==== Professional ====
+    ## ==== Professional ====
     job_title = serializers.CharField(required=False)
     company = serializers.CharField(required=False)
     industry = serializers.CharField(required=False)
     skills = serializers.CharField(required=False)
     years_experience = serializers.IntegerField(required=False)
 
-    # ==== About ====
+    ## ==== About ====
     bio = serializers.CharField(required=False)
     interests = serializers.CharField(required=False)
     hobbies = serializers.CharField(required=False)
@@ -44,7 +48,7 @@ class LoginSerializer(serializers.Serializer):
  ## Add the ability to update individual fields in the profile
 class UpdateProfileSerializer(serializers.Serializer):
 
-    # ==== Identity ====
+    ## ==== Identity ====
     profile_picture = serializers.ImageField(required=False)
     display_name = serializers.CharField(required=False)
     local_language_name = serializers.CharField(required=False)
@@ -52,23 +56,23 @@ class UpdateProfileSerializer(serializers.Serializer):
     nationality = serializers.CharField(required=False)
     languages_spoken = serializers.CharField(required=False)
 
-    # ==== Location ====
+    ## ==== Location ====
     country = serializers.CharField(required=False)
     city = serializers.CharField(required=False)
 
-    # ==== Contact ====
+    ## ==== Contact ====
     email = serializers.EmailField(required=False)
     phone = serializers.CharField(required=False)
     website = serializers.URLField(required=False)
 
-    # ==== Professional ====
+    ## ==== Professional ====
     job_title = serializers.CharField(required=False)
     company = serializers.CharField(required=False)
     industry = serializers.CharField(required=False)
     skills = serializers.CharField(required=False)
     years_experience = serializers.IntegerField(required=False)
 
-    # ==== About ====
+    ## ==== About ====
     bio = serializers.CharField(required=False)
     interests = serializers.CharField(required=False)
     hobbies = serializers.CharField(required=False)
@@ -85,12 +89,11 @@ class ConnectionSerializer(serializers.Serializer):
 class UpdateConnectionSerializer(serializers.Serializer):
 
     relationship = serializers.ChoiceField(
-        choices = ["public", "personal", "professional", "general",]
+        choices = RELATIONSHIP_TYPES,
     )
 
 ## connection requests awaiting review
 class PendingConnectionSerializer(serializers.Serializer):
-
 
     id = serializers.IntegerField()
     username = serializers.CharField()
@@ -102,26 +105,13 @@ class ConnectionRequestSerializer(serializers.Serializer):
     username = serializers.CharField()
 
 
-# Review a pending connection request
+## Review a pending connection request
 class ReviewConnectionSerializer(serializers.Serializer):
 
     relationship = serializers.ChoiceField(
-        choices=[
-            "public",
-            "personal",
-            "professional",
-            "general",
-        ]
+        choices = RELATIONSHIP_TYPES,
     )
 
-
-## ***TO CHECK*** - Need to convert this for the API to access visibility
-RELATIONSHIP_CHOICES = [
-    "public",
-    "personal",
-    "professional",
-    "general",
-]
 
 ## Profile field visibility rule used by the API.
 class VisibilityFieldRuleSerializer(serializers.Serializer):
@@ -135,7 +125,7 @@ class VisibilityFieldRuleSerializer(serializers.Serializer):
 
     visible_to = serializers.ListField(
         child=serializers.ChoiceField(
-            choices=RELATIONSHIP_CHOICES,
+            choices=RELATIONSHIP_TYPES,
         ),
         required=False,
         allow_empty=True,
@@ -149,7 +139,7 @@ class VisibilityLinkRuleSerializer(serializers.Serializer):
 
     visible_to = serializers.ListField(
         child=serializers.ChoiceField(
-            choices=RELATIONSHIP_CHOICES,
+            choices=RELATIONSHIP_TYPES,
         ),
         required=False,
         allow_empty=True,
@@ -169,7 +159,7 @@ class VisibilityRulesSerializer(serializers.Serializer):
         required=False,
     )
 
-### Profile link shown through the API.
+## Profile link shown through the API.
 class ProfileLinkSerializer(serializers.Serializer):
 
     id = serializers.IntegerField(read_only=True)
@@ -180,7 +170,7 @@ class ProfileLinkSerializer(serializers.Serializer):
     display_order = serializers.IntegerField()
 
 
-# Create a profile link through the API - taken from ProfileLinkForm.
+## Create a profile link through the API - taken from ProfileLinkForm.
 class CreateProfileLinkSerializer(serializers.Serializer):
 
     platform = serializers.ChoiceField(
@@ -223,8 +213,7 @@ class CreateProfileLinkSerializer(serializers.Serializer):
         return data
 
 
-## Update a profile link through the API.
-## partial updates, all fields optional
+## Update a profile link through the API. Partial updates, all fields optional
 class UpdateProfileLinkSerializer(serializers.Serializer):
 
     platform = serializers.ChoiceField(
