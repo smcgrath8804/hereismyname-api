@@ -156,6 +156,11 @@ class ConnectionDetailAPIView(APIView):
     ## Allow the owner to update one of their connections
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        request=UpdateConnectionSerializer,
+        responses={200: ConnectionSerializer},
+    )
+
     def patch(self, request, connection_id):
 
         connection = get_object_or_404(
