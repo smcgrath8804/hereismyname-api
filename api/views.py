@@ -104,6 +104,11 @@ class MyProfileAPIView(APIView):
 
         return Response(serializer.data)
 
+    @extend_schema(
+        request=UpdateProfileSerializer,
+        responses={200: ProfileSerializer},
+    )
+
     def patch(self, request):
 
         profile = request.user.profile
