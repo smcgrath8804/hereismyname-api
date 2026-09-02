@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+
 from .forms import RegisterForm
+
 from django.contrib.auth import login
 
+
 def register(request):
+    ## Register a new user then log them in automatically
     if request.method == "POST":
         form = RegisterForm(request.POST)
 
@@ -21,7 +25,7 @@ def register(request):
 
 @login_required
 def dashboard(request):
-
+    ## Show the logged-in users dashboard
     return render(
         request,
         "users/dashboard.html",

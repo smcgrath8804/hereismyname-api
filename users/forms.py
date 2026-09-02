@@ -5,6 +5,7 @@ from .models import User
 
 
 class RegisterForm(UserCreationForm):
+    ## Registration form for the custom email-based user model
     email = forms.EmailField()
 
     class Meta:
