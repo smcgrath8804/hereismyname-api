@@ -4,6 +4,7 @@ from .constants import PROFILE_FIELDS
 
 from connections.constants import RELATIONSHIP_TYPES
 
+
 class VisibilityRule(models.Model):
 
     FIELD_CHOICES = PROFILE_FIELDS
@@ -30,6 +31,10 @@ class VisibilityRule(models.Model):
                 name="unique_visibility_rule",
             )
         ]
+
+    def __str__(self):
+        return f"{self.field_name} - {self.visible_to}"
+
 
 class LinkVisibilityRule(models.Model):
 

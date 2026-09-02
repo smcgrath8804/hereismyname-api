@@ -1,9 +1,21 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+
 from connections.constants import RELATIONSHIP_TYPES
-from links.models import ProfileLink
+
+from links.services import get_user_links
+
 from .constants import PROFILE_FIELDS
+
 from .models import VisibilityRule, LinkVisibilityRule
+
+
+def build_relationship_selection(item_id, selected_rules):
+    ## Check which relationship boxes should be selected
+    return {
+        relationship: (item_id, relationship) in selected_rules
+        for relationship, _ in RELATIONSHIP_TYPES
+    }
 
 
 @login_required
@@ -14,10 +26,7 @@ def visibility_rules(request):
         ## Remove existing rules before recreate them
         VisibilityRule.objects.filter(owner=request.user,).delete()
 
-        LinkVisibilityRule.objects.filter(
-            owner=request.user,
-        ).delete()
-
+        LinkVisibilityRule.objects.filter(owner=request.user,).delete()
 
         ## Save profile field visibility
         for field_name, _ in PROFILE_FIELDS:
@@ -35,8 +44,8 @@ def visibility_rules(request):
 
 
         ## Save profile link visibility
-        for link in ProfileLink.objects.filter(
-            profile=request.user.profile,
+        for link in get_user_links(
+            request.user,
         ):
 
             for relationship, _ in RELATIONSHIP_TYPES:
@@ -79,25 +88,27 @@ def visibility_rules(request):
     profile_fields = []
 
     for field_name, field_label in PROFILE_FIELDS:
-        profile_fields.append({
+        field_data = {
             "name": field_name,
             "label": field_label,
+        }
 
-            "public": (field_name, "public") in selected,
-            "professional": (field_name, "professional") in selected,
-            "personal": (field_name, "personal") in selected,
-            "general": (field_name, "general") in selected,
-        })
+        field_data.update(
+            build_relationship_selection(
+                field_name,
+                selected,
+            )
+        )
+        profile_fields.append(field_data)
 
 
     ## Build the profile link data
     profile_links = []
 
-    for link in ProfileLink.objects.filter(
-        profile = request.user.profile,
+    for link in get_user_links(
+        request.user,
     ):
-
-        profile_links.append({
+        link_data = {
             "id": link.id,
             "title": (
                 link.platform_name
@@ -106,13 +117,15 @@ def visibility_rules(request):
             ),
             "label": link.label,
             "url": link.url,
+        }
 
-            "public": (link.id, "public") in selected_links,
-            "professional": (link.id, "professional") in selected_links,
-            "personal": (link.id, "personal") in selected_links,
-            "general": (link.id, "general") in selected_links,
-
-        })
+        link_data.update(
+            build_relationship_selection(
+                link.id,
+                selected_links,
+            )
+        )
+        profile_links.append(link_data)
 
     ## Render the page
     context = {

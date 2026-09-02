@@ -1,7 +1,10 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+
 from visibility.models import LinkVisibilityRule
+
 from connections.models import Connection
+
 from links.models import ProfileLink
 from links.services import get_visible_links
 
@@ -14,6 +17,7 @@ Django model queries: https://docs.djangoproject.com/en/6.0/topics/db/queries/
 
 Django many-object filtering with __in: https://docs.djangoproject.com/en/6.0/ref/models/querysets/#in
 """
+
 
 class VisibilityRulesTests(TestCase):
     def setUp(self):
