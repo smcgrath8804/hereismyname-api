@@ -4,7 +4,6 @@ from django.urls import reverse
 
 from .models import ProfileLink
 
-
 User = get_user_model()
 
 

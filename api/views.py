@@ -30,6 +30,7 @@ from drf_spectacular.utils import extend_schema
 
 User = get_user_model()
 
+
 class LoginAPIView(APIView):
     ## Login through the API and return an authentication token
     permission_classes = [AllowAny]

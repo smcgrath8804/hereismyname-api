@@ -6,6 +6,7 @@ from .views import (LoginAPIView, MyProfileAPIView, ProfileAPIView,
                     ProfileLinksAPIView, ProfileLinkDetailAPIView,
                     )
 
+
 urlpatterns = [
     ## ==== Authentication ====
     path("login/", LoginAPIView.as_view(), name="api-login",),

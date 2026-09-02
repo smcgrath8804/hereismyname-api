@@ -4,6 +4,7 @@ from . import views
 
 app_name = "connections"
 
+
 urlpatterns = [
     ## ==== Search ====
     path("search/", views.search_users, name="search_users"),

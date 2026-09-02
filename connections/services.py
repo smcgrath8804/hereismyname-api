@@ -2,6 +2,7 @@ from .models import Connection
 from django.utils import timezone
 from .constants import RELATIONSHIP_TYPES
 
+
 def build_connection_data(connection):
     ## Build a consistent API representation of a connection for re-use
     return {

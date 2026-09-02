@@ -1,9 +1,14 @@
+from django.shortcuts import get_object_or_404
+
 from profiles.services import get_relationship
+
 from visibility.models import LinkVisibilityRule
 
-## Link layout to be used for templates and API responsws
-def build_link_data(link):
+from .models import ProfileLink
 
+
+def build_link_data(link):
+    ## Link layout to be used for templates and API responsws
     return {
         "id": link.id,
         "platform": link.get_platform_display(),
@@ -32,4 +37,18 @@ def get_visible_links(profile, viewer):
 
     return profile.links.filter(
         id__in = visible_link_ids,
+    )
+
+def get_user_links(user):
+    ## Return links owned by a user's profile
+    return ProfileLink.objects.filter(
+        profile=user.profile,
+    )
+
+def get_user_link_or_404(user, link_id):
+    ## Return one link owned by the user or raise 404
+    return get_object_or_404(
+        ProfileLink,
+        id=link_id,
+        profile=user.profile,
     )

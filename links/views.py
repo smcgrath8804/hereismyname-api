@@ -1,16 +1,19 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 
 from .forms import ProfileLinkForm
+
 from .models import ProfileLink
+
+from .services import get_user_link_or_404, get_user_links
 
 
 @login_required
 def links_list(request):
-
-    links = ProfileLink.objects.filter(
-        profile=request.user.profile,
+    ## Show all profile links owned by the logged-in user
+    links = get_user_links(
+        request.user,
     )
 
     return render(
@@ -24,13 +27,12 @@ def links_list(request):
 
 @login_required
 def link_form(request, link_id=None):
-
+    ## Add a new profile link or edit an existing one
     if link_id:
 
-        link = get_object_or_404(
-            ProfileLink,
-            id=link_id,
-            profile=request.user.profile,
+        link = get_user_link_or_404(
+            request.user,
+            link_id,
         )
 
     else:
@@ -55,8 +57,8 @@ def link_form(request, link_id=None):
                 new_link.profile = request.user.profile
 
                 new_link.display_order = (
-                    ProfileLink.objects.filter(
-                        profile=request.user.profile,
+                    get_user_links(
+                        request.user,
                     ).count()
                 )
 
@@ -96,11 +98,10 @@ def link_form(request, link_id=None):
 
 @login_required
 def delete_link(request, link_id):
-
-    link = get_object_or_404(
-        ProfileLink,
-        id=link_id,
-        profile=request.user.profile,
+    ## Delete one profile link owned by the logged-in user
+    link = get_user_link_or_404(
+        request.user,
+        link_id,
     )
 
     if request.method == "POST":

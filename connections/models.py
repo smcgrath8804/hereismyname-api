@@ -3,6 +3,7 @@ from django.db import models
 
 from .constants import RELATIONSHIP_TYPES
 
+
 class Connection(models.Model):
 
     owner = models.ForeignKey(

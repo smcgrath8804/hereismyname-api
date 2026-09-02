@@ -6,9 +6,9 @@ from links.constants import PLATFORM_CHOICES
 
 from connections.constants import RELATIONSHIP_TYPES
 
+
 ## View the profile
 class ProfileSerializer(serializers.Serializer):
-
     ## ==== Identity ====
     profile_picture = serializers.ImageField(required=False)
     display_name = serializers.CharField(required=False)

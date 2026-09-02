@@ -5,14 +5,17 @@ from django.contrib import messages
 
 
 from .models import Connection
+
 from .services import (create_connection_request, review_connection_request,)
+
 from .constants import RELATIONSHIP_TYPES
 
 User = get_user_model()
 
-## Search for other users and show existing sent requests
+
 @login_required
 def search_users(request):
+    ## Search for other users and show existing sent requests
     query = request.GET.get("q", "")
     users = []
 
@@ -44,10 +47,10 @@ def search_users(request):
 
     return render(request, "connections/search_users.html", context)
 
-## Create a new pending connection request
+
 @login_required
 def send_connection_request(request, user_id):
-
+    ## Create a new pending connection request
     if request.method != "POST":
         return redirect("connections:search_users")
 
@@ -72,10 +75,10 @@ def send_connection_request(request, user_id):
 
     return redirect("connections:search_users")
 
-## Accept a pending connection request
+
 @login_required
 def review_request(request, connection_id):
-
+    ## Accept a pending connection request
     if request.method != "POST":
         return redirect("connections:connections_list")
 
@@ -107,10 +110,10 @@ def review_request(request, connection_id):
 
     return redirect("connections:connections_list")
 
-## Show sent, pending and accepted connections
+
 @login_required
 def connections_list(request):
-
+    ## Show sent, pending and accepted connections
     if request.method == "POST":
 
         connection = get_object_or_404(

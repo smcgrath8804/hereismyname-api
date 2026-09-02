@@ -18,7 +18,7 @@ urlpatterns = [
     path("profiles/", include("profiles.urls")),
     path("connections/", include("connections.urls")),
     path("visibility/", include("visibility.urls")),
-    path("links/", include("links.urls"), ),
+    path("links/", include("links.urls")),
 
     ## ==== API documentation ====
     path('api/schema/', SpectacularAPIView.as_view(), name='schema',),
