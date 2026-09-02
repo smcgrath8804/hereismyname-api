@@ -10,7 +10,6 @@ class Profile(models.Model):
     )
 
     # ==== Identity ====
-
     profile_picture = models.ImageField(
         upload_to="profile_pictures/",
         blank=True,
@@ -44,7 +43,6 @@ class Profile(models.Model):
 
 
     # ==== Location ====
-
     country = models.CharField(
         max_length=100,
         blank=True,
@@ -57,7 +55,6 @@ class Profile(models.Model):
 
 
     # ==== Contact ====
-
     email = models.EmailField(
         blank=True,
     )
@@ -73,7 +70,6 @@ class Profile(models.Model):
 
 
     # ==== Professional ====
-
     job_title = models.CharField(
         max_length=100,
         blank=True,
@@ -100,8 +96,6 @@ class Profile(models.Model):
 
 
     # ==== About ====
-
-
     bio = models.TextField(
         blank=True,
     )

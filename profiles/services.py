@@ -1,7 +1,7 @@
 from connections.models import Connection
 from visibility.models import VisibilityRule
 
-## Reusable way to build my profiles each time
+## Build a reusable profile data dictionary
 def build_profile_data(profile):
 
     return {
@@ -67,18 +67,17 @@ def get_visible_fields(profile, viewer):
         profile.user
     )
 
-    # print("Relationship:", relationship)
     if relationship == "owner":
         return build_profile_data(profile)
 
     visible_fields = {}
 
+    ## Show public fields plus fields for the viewer's relationship type
     rules = VisibilityRule.objects.filter(
         owner = profile.user,
-        visible_to__in=["public", relationship]  ## Show public to all connections, plus corresponding connection type
+        visible_to__in=["public", relationship]
     )
 
-    # print("Rules:", list(rules.values_list("field_name", flat=True)))
     for rule in rules:
 
         visible_fields[rule.field_name] = getattr(

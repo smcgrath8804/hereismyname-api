@@ -2,13 +2,16 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import ProfileForm
+
 from links.services import get_visible_links
+
 from .models import Profile
+
 from .services import get_visible_fields
 
 
 def profile_view(request, username):
-
+    ## Show a profile using the viewer's visibility rules
     profile = get_object_or_404(
         Profile,
         user__username=username
@@ -37,11 +40,10 @@ def profile_view(request, username):
 
 @login_required
 def edit_profile(request):
-
+    ## Allow the logged-in user to update their own profile
     profile = request.user.profile
 
     if request.method == "POST":
-
         form = ProfileForm(
             request.POST,
             request.FILES,
@@ -49,13 +51,11 @@ def edit_profile(request):
         )
 
         if form.is_valid():
-
             form.save()
 
             return redirect("dashboard")
 
     else:
-
         form = ProfileForm(
             instance=profile
         )
