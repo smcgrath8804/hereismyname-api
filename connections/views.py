@@ -6,6 +6,8 @@ from django.contrib import messages
 
 from .models import Connection
 
+from profiles.services import build_visible_profile_summary
+
 from .services import (create_connection_request, review_connection_request,)
 
 from .constants import RELATIONSHIP_TYPES
@@ -13,11 +15,23 @@ from .constants import RELATIONSHIP_TYPES
 User = get_user_model()
 
 
+def build_connection_card(connection, profile_user, viewer):
+    ## Combine a connection with safe profile display details
+    return {
+        "connection": connection,
+        "profile": build_visible_profile_summary(
+            profile_user,
+            viewer,
+        ),
+    }
+
 @login_required
 def search_users(request):
     ## Search for other users and show existing sent requests
     query = request.GET.get("q", "")
     users = []
+    search_results = []
+    requested_user_ids = set()
 
     if query:
         users = User.objects.filter(
@@ -39,10 +53,20 @@ def search_users(request):
             existing_requests.values_list("owner_id", flat=True)
         )
 
+
+
+        for user in users:
+            search_results.append(
+                build_visible_profile_summary(
+                    user,
+                    request.user,
+                )
+            )
+
     context = {
         "query": query,
-        "users": users,
-        "requested_user_ids": requested_user_ids if query else set(),
+        "users": search_results,
+        "requested_user_ids": requested_user_ids,
     }
 
     return render(request, "connections/search_users.html", context)
@@ -160,13 +184,47 @@ def connections_list(request):
         relationship__isnull=True,
     ).order_by("requester__username")
 
+    sent_request_cards = []
+
+    for connection in sent_requests:
+        sent_request_cards.append(
+            build_connection_card(
+                connection,
+                connection.owner,
+                request.user,
+            )
+        )
+
+    pending_request_cards = []
+
+    for connection in pending_requests:
+        pending_request_cards.append(
+            build_connection_card(
+                connection,
+                connection.requester,
+                request.user,
+            )
+        )
+
+    received_connection_cards = []
+
+    for connection in received_connections:
+        received_connection_cards.append(
+            build_connection_card(
+                connection,
+                connection.requester,
+                request.user,
+            )
+        )
+
+
     return render(
         request,
         "connections/connections_list.html",
         {
-            "sent_requests": sent_requests,
-            "pending_requests": pending_requests,
-            "received_connections": received_connections,
+            "sent_requests": sent_request_cards,
+            "pending_requests": pending_request_cards,
+            "received_connections": received_connection_cards,
             "relationship_types": RELATIONSHIP_TYPES,
-        },
+        }
     )

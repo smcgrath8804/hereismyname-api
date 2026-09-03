@@ -88,3 +88,33 @@ def get_visible_fields(profile, viewer):
         )
 
     return visible_fields
+
+def get_visible_display_name(visible_fields, user):
+    ## Choose the first visible display name for lists and search results
+    for field_name in [
+        "display_name",
+        "display_name_2",
+        "display_name_3",
+        "local_language_name",
+    ]:
+        if visible_fields.get(field_name):
+            return visible_fields[field_name]
+
+    return user.username
+
+
+def build_visible_profile_summary(user, viewer):
+    ## Build safe profile details for search and connection lists
+    visible_fields = get_visible_fields(
+        user.profile,
+        viewer,
+    )
+
+    return {
+        "user": user,
+        "display_name": get_visible_display_name(
+            visible_fields,
+            user,
+        ),
+        "profile_picture": visible_fields.get("profile_picture"),
+    }

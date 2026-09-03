@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
 
 <h2>Find People</h2>
@@ -18,7 +18,7 @@
 
 {% if users %}
 
-    {% for user in users %}
+    {% for result in users %}
 
         <div class="card mb-3">
 
@@ -26,37 +26,34 @@
                 <div class="d-flex align-items-center">
                     <div class="me-3">
 
-                        {% if user.profile.profile_picture %}
+                        {% if result.profile_picture %}
                             <img
-                                src="{{ user.profile.profile_picture.url }}"
-                                alt="Profile Picture" class="rounded-circle"
+                                src="{{ result.profile_picture.url }}"
+                                alt="Profile Picture"
+                                class="rounded-circle"
                                 style="width: 70px; height: 70px; object-fit: cover;"
                             >
                         {% else %}
-                            <div
-                                class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
-                                style="width: 70px; height: 70px;"
+                            <img
+                                src="{% static 'images/default.jpg' %}"
+                                alt="Default Profile Picture"
+                                class="rounded-circle"
+                                style="width: 70px; height: 70px; object-fit: cover;"
                             >
-                                {{ user.username|first|upper }}
-                            </div>
                         {% endif %}
 
                     </div>
 
                     <div class="flex-grow-1">
                         <h5 class="card-title mb-1">
-                            {% if user.profile.display_name %}
-                                {{ user.profile.display_name }}
-                            {% else %}
-                                {{ user.username }}
-                            {% endif %}
+                            {{ result.display_name }}
                         </h5>
 
                         <p class="text-muted mb-3">
-                            @{{ user.username }}
+                            @{{ result.user.username }}
                         </p>
 
-                        {% if user.id in requested_user_ids %}
+                        {% if result.user.id in requested_user_ids %}
 
                             <span class="badge bg-success">
                                 Connection request sent
@@ -64,7 +61,7 @@
 
                         {% else %}
 
-                            <form method="post" action="{% url 'connections:send_connection_request' user.id %}">
+                            <form method="post" action="{% url 'connections:send_connection_request' result.user.id %}">
 
                                 {% csrf_token %}
                                 <button class="btn btn-primary btn-sm" type="submit">

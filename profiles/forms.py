@@ -13,6 +13,8 @@ class ProfileForm(forms.ModelForm):
             # ==== Identity ====
             "profile_picture",
             "display_name",
+            "display_name_2",
+            "display_name_3",
             "local_language_name",
             "date_of_birth",
             "nationality",

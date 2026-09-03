@@ -12,6 +12,8 @@ class ProfileSerializer(serializers.Serializer):
     ## ==== Identity ====
     profile_picture = serializers.ImageField(required=False)
     display_name = serializers.CharField(required=False)
+    display_name_2 = serializers.CharField(required=False)
+    display_name_3 = serializers.CharField(required=False)
     local_language_name = serializers.CharField(required=False)
     date_of_birth = serializers.DateField(required=False)
     nationality = serializers.CharField(required=False)
