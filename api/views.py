@@ -145,7 +145,7 @@ class ConnectionsAPIView(APIView):
         )
 
         data = [
-            build_connection_data(connection)
+            build_connection_data(connection, request.user,)
             for connection in connections
         ]
 
@@ -187,7 +187,7 @@ class ConnectionDetailAPIView(APIView):
 
         return Response(
             ConnectionSerializer(
-                build_connection_data(connection)
+                build_connection_data(connection, request.user,)
             ).data
         )
 
@@ -204,7 +204,7 @@ class PendingConnectionsAPIView(APIView):
         )
 
         data = [
-            build_pending_connection_data(connection)
+            build_pending_connection_data(connection, request.user,)
             for connection in pending
         ]
 
@@ -315,7 +315,7 @@ class ReviewConnectionAPIView(APIView):
 
         return Response(
             ConnectionSerializer(
-                build_connection_data(connection)
+                build_connection_data(connection, request.user,)
             ).data
         )
 

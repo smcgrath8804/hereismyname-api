@@ -1,23 +1,37 @@
-from .models import Connection
 from django.utils import timezone
+
+from profiles.services import build_visible_profile_summary
+
 from .constants import RELATIONSHIP_TYPES
 
+from .models import Connection
 
-def build_connection_data(connection):
+
+def build_connection_data(connection, viewer):
     ## Build a consistent API representation of a connection for re-use
+    profile_summary = build_visible_profile_summary(
+        connection.requester,
+        viewer,
+    )
+
     return {
         "id": connection.id,
         "username": connection.requester.username,
-        "display_name": connection.requester.profile.display_name,
+        "display_name": profile_summary["display_name"],
         "relationship": connection.relationship,
     }
 
-def build_pending_connection_data(connection):
+def build_pending_connection_data(connection, viewer):
     ## Build a consistent API representation of a pending connection request
+    profile_summary = build_visible_profile_summary(
+        connection.requester,
+        viewer,
+    )
+
     return {
         "id": connection.id,
         "username": connection.requester.username,
-        "display_name": connection.requester.profile.display_name,
+        "display_name": profile_summary["display_name"],
     }
 
 def create_connection_request(owner, requester):
