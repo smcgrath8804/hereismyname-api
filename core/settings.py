@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "api",
     "rest_framework.authtoken",
 ]
-# **TO CHECK** Add the REST framework for the API *DONE*
+## Django REST Framework settings
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [

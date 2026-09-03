@@ -29,7 +29,6 @@ def build_connection_card(connection, profile_user, viewer):
 def search_users(request):
     ## Search for other users and show existing sent requests
     query = request.GET.get("q", "")
-    users = []
     search_results = []
     requested_user_ids = set()
 
