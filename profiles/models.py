@@ -21,6 +21,16 @@ class Profile(models.Model):
         blank=True,
     )
 
+    display_name_2 = models.CharField(
+        max_length=100,
+        blank=True,
+    )
+
+    display_name_3 = models.CharField(
+        max_length=100,
+        blank=True,
+    )
+
     local_language_name = models.CharField(
         max_length=100,
         blank=True,

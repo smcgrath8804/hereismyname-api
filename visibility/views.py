@@ -91,6 +91,7 @@ def visibility_rules(request):
         field_data = {
             "name": field_name,
             "label": field_label,
+            "value": getattr(request.user.profile, field_name, "",),
         }
 
         field_data.update(

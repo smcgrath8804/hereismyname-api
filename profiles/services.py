@@ -8,6 +8,8 @@ def build_profile_data(profile):
         # ==== Identity ====
         "profile_picture": profile.profile_picture,
         "display_name": profile.display_name,
+        "display_name_2": profile.display_name_2,
+        "display_name_3": profile.display_name_3,
         "local_language_name": profile.local_language_name,
         "date_of_birth": profile.date_of_birth,
         "nationality": profile.nationality,

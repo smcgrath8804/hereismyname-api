@@ -3,6 +3,8 @@ PROFILE_FIELDS = [
     # ==== Identity ====
     ("profile_picture", "Profile Picture"),
     ("display_name", "Display Name"),
+    ("display_name_2", "Display Name 2"),
+    ("display_name_3", "Display Name 3"),
     ("local_language_name", "Local Language Name"),
     ("date_of_birth", "Date of Birth"),
     ("nationality", "Nationality"),

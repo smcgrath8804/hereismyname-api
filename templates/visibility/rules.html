@@ -65,6 +65,10 @@ Visibility Rules
                                     Profile Field
                                 </th>
 
+                                <th style="width:30%">
+                                    Current Value
+                                </th>
+
                                 <th class="text-center">
                                     Public
                                 </th>
@@ -92,6 +96,33 @@ Visibility Rules
 
                                     <td>
                                         {{ field.label }}
+                                    </td>
+
+                                    <td class="text-muted">
+
+                                        {% if field.value %}
+
+                                            {% if field.name == "profile_picture" %}
+
+                                                <img
+                                                    src="{{ field.value.url }}"
+                                                    alt="Current profile picture"
+                                                    class="rounded-circle"
+                                                    style="width: 30px; height: 30px; object-fit: cover;"
+                                                >
+
+                                            {% else %}
+
+                                                {{ field.value }}
+
+                                            {% endif %}
+
+                                        {% else %}
+
+                                            Not set
+
+                                        {% endif %}
+
                                     </td>
 
                                     <td class="text-center">
