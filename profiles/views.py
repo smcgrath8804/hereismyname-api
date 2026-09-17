@@ -7,7 +7,7 @@ from links.services import get_visible_links
 
 from .models import Profile
 
-from .services import get_visible_fields
+from .services import get_visible_fields, get_primary_display_name
 
 
 def profile_view(request, username):
@@ -33,7 +33,11 @@ def profile_view(request, username):
         {
             "profile": profile,
             "visible_fields": visible_fields,
-            "visible_links": visible_links
+            "visible_links": visible_links,
+            "primary_display_name": get_primary_display_name(
+                profile,
+                request.user,
+            ),
         }
     )
 

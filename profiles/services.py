@@ -1,6 +1,7 @@
 from connections.models import Connection
 from visibility.models import VisibilityRule
 
+
 ## Build a reusable profile data dictionary
 def build_profile_data(profile):
 
@@ -37,6 +38,7 @@ def build_profile_data(profile):
         "hobbies": profile.hobbies,
     }
 
+
 def get_relationship(viewer, owner):
 
     if viewer.is_authenticated:
@@ -47,8 +49,8 @@ def get_relationship(viewer, owner):
         try:
 
             connection = Connection.objects.get(
-                owner = owner,
-                requester = viewer,
+                owner=owner,
+                requester=viewer,
             )
 
             if connection.relationship is None:
@@ -76,7 +78,7 @@ def get_visible_fields(profile, viewer):
 
     ## Show public fields plus fields for the viewer's relationship type
     rules = VisibilityRule.objects.filter(
-        owner = profile.user,
+        owner=profile.user,
         visible_to__in=["public", relationship]
     )
 
@@ -88,6 +90,75 @@ def get_visible_fields(profile, viewer):
         )
 
     return visible_fields
+
+
+def get_primary_display_name(profile, viewer):
+    ## Choose the best visible name for the profile heading
+    relationship = get_relationship(
+        viewer,
+        profile.user,
+    )
+
+    name_fields = [
+        "display_name",
+        "display_name_2",
+        "display_name_3",
+        "local_language_name",
+    ]
+
+    ## Owner can see all of their own names
+    if relationship == "owner":
+
+        for field_name in name_fields:
+
+            value = getattr(
+                profile,
+                field_name,
+            )
+
+            if value:
+                return value
+
+        return profile.user.username
+
+    ## Public viewers can only use public names
+    if relationship == "public":
+        relationship_order = [
+            "public",
+        ]
+
+    ## Connections use their relationship first, then public
+    else:
+        relationship_order = [
+            relationship,
+            "public",
+        ]
+
+    rules = VisibilityRule.objects.filter(
+        owner=profile.user,
+        field_name__in=name_fields,
+        visible_to__in=relationship_order,
+    )
+
+    selected_rules = {
+        (rule.field_name, rule.visible_to)
+        for rule in rules
+    }
+
+    for relationship_type in relationship_order:
+
+        for field_name in name_fields:
+
+            value = getattr(
+                profile,
+                field_name,
+            )
+
+            if value and (field_name, relationship_type) in selected_rules:
+                return value
+
+    return profile.user.username
+
 
 def get_visible_display_name(visible_fields, user):
     ## Choose the first visible display name for lists and search results
@@ -112,9 +183,9 @@ def build_visible_profile_summary(user, viewer):
 
     return {
         "user": user,
-        "display_name": get_visible_display_name(
-            visible_fields,
-            user,
+        "display_name": get_primary_display_name(
+            user.profile,
+            viewer,
         ),
         "profile_picture": visible_fields.get("profile_picture"),
     }

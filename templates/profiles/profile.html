@@ -1,11 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-{% if visible_fields.display_name %}
-    {{ visible_fields.display_name }}
-{% else %}
-    {{ profile.user.username }}
-{% endif %}
+    {{ primary_display_name }}
 {% endblock %}
 
 {% block content %}
@@ -30,13 +26,7 @@
         {% endif %}
 
         <h1>
-
-            {% if visible_fields.display_name %}
-                {{ visible_fields.display_name }}
-            {% else %}
-                {{ profile.user.username }}
-            {% endif %}
-
+            {{ primary_display_name }}
         </h1>
 
         {% if visible_fields.job_title or visible_fields.company %}
@@ -66,10 +56,49 @@
     <!-- Identity -->
     <!-- ============================= -->
 
-    {% if visible_fields.local_language_name or visible_fields.date_of_birth or visible_fields.nationality or visible_fields.languages_spoken %}
+    {% if visible_fields.display_name_2 or visible_fields.display_name_3 or visible_fields.local_language_name or visible_fields.date_of_birth or visible_fields.nationality or visible_fields.languages_spoken %}
 
         <h3>Identity</h3>
         <hr>
+        <!-- filter out the numbered display namesto viewers -->
+        {% if visible_fields.display_name %}
+            <p>
+                <strong>
+                    {% if request.user == profile.user %}
+                        Display Name:
+                    {% else %}
+                        Name:
+                    {% endif %}
+                </strong>
+                {{ visible_fields.display_name }}
+            </p>
+        {% endif %}
+
+        {% if visible_fields.display_name_2 %}
+                <p>
+                     <strong>
+                        {% if request.user == profile.user %}
+                            Display Name 2:
+                        {% else %}
+                            Name:
+                        {% endif %}
+                    </strong>
+                    {{ visible_fields.display_name_2 }}
+                </p>
+        {% endif %}
+
+        {% if visible_fields.display_name_3 %}
+            <p>
+                <strong>
+                    {% if request.user == profile.user %}
+                        Display Name 3:
+                    {% else %}
+                        Name:
+                    {% endif %}
+                </strong>
+                {{ visible_fields.display_name_3 }}
+            </p>
+        {% endif %}
 
         {% if visible_fields.local_language_name %}
             <p><strong>Local Name:</strong> {{ visible_fields.local_language_name }}</p>
