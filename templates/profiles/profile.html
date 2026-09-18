@@ -19,8 +19,7 @@
             <img
                 src="{{ visible_fields.profile_picture.url }}"
                 alt="Profile Picture"
-                class="img-thumbnail mb-3"
-                style="width: 180px; height: 180px; object-fit: cover;"
+                class="img-thumbnail mb-3 profile-photo"
             >
 
         {% endif %}
@@ -50,6 +49,15 @@
         {% endif %}
 
     </div>
+
+    {% if request.user.is_authenticated and request.user == profile.user %}
+        <div class="mb-4">
+            <a href="{% url 'profiles:edit_profile' %}"
+               class="btn btn-primary">
+                Edit Profile
+            </a>
+        </div>
+    {% endif %}
 
 
     <!-- ============================= -->
